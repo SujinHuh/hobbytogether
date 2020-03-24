@@ -19,9 +19,7 @@ import javax.validation.Valid;
 public class AccountController {
 
     private final SignUpFormValidator signUpFormValidator;
-    private final AccountRepository accountRepository;
-    private final JavaMailSender javaMailSender;
-
+    private final AccountService accountService;
     /**
      * @param webDataBinder signUpFormValidator.validate(signUpForm, errors);
      *                      if(errors.hasErrors()) {
@@ -45,29 +43,8 @@ public class AccountController {
         if (errors.hasErrors()) {
             return "account/sign-up";
         }
+        accountService.processNewAccount(signUpForm);
 
-        Account account = Account.builder()
-                .email(signUpForm.getEmail())
-                .nickname(signUpForm.getNickname())
-                .password(signUpForm.getPassword()) //TODO password encoding
-                .studyCreateByWeb(true)
-                .studyEnrollmentResultByWeb(true)
-                .studyUpdateByWeb(true)
-                .build();
-
-        //회원 정보 저장
-        Account newAccount = accountRepository.save(account);
-
-        //인증 이메일 발송
-        newAccount.generateEmailCheckToken();
-        SimpleMailMessage mailMessage = new SimpleMailMessage();
-
-        mailMessage.setTo(newAccount.getEmail());
-        mailMessage.setSubject("하비 투게더, 회원 가입 인증");
-        mailMessage.setText("/check-email-toke?token=" + newAccount.getEmailCheckToken() +
-                "&email=" + newAccount.getEmail());
-
-        javaMailSender.send(mailMessage);
         return "redirect:/";
     }
 
