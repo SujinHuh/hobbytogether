@@ -20,13 +20,7 @@ public class AccountController {
 
     private final SignUpFormValidator signUpFormValidator;
     private final AccountService accountService;
-    /**
-     * @param webDataBinder signUpFormValidator.validate(signUpForm, errors);
-     *                      if(errors.hasErrors()) {
-     *                      return "account/sign-up";
-     *                      }
-     *                      동일
-     */
+
     @InitBinder("signUpForm")
     public void initBinder(WebDataBinder webDataBinder) {
         webDataBinder.addValidators(signUpFormValidator);

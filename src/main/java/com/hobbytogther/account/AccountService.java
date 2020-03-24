@@ -4,6 +4,7 @@ import com.hobbytogther.domain.Account;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.validation.Valid;
@@ -14,6 +15,7 @@ public class AccountService {
 
     private final AccountRepository accountRepository;
     private final JavaMailSender javaMailSender;
+    private final PasswordEncoder passwordEncoder;
 
     public void processNewAccount(SignUpForm signUpForm) {
 
@@ -27,7 +29,7 @@ public class AccountService {
         Account account = Account.builder()
                 .email(signUpForm.getEmail())
                 .nickname(signUpForm.getNickname())
-                .password(signUpForm.getPassword()) //TODO password encoding
+                .password(passwordEncoder.encode(signUpForm.getPassword()))
                 .studyCreateByWeb(true)
                 .studyEnrollmentResultByWeb(true)
                 .studyUpdateByWeb(true)

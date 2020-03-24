@@ -12,7 +12,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.then;
 
@@ -76,13 +76,13 @@ class AccountControllerTest {
     @Test
     public void signUpSubmit_CorrectInPut() throws Exception {
 
-        //given
 
         /**
          * 1. 회원 정보 저장
          * 2. 인증 이메일 발송
          * 3. 처리 후 첫 페이지로 이동
          */
+        //given
         mockMvc.perform(post("/sign-up")
                 .param("nickname", "sujin")
                 .param("email", "test@naver.com")
@@ -90,8 +90,12 @@ class AccountControllerTest {
                 .with(csrf())) //TODO csrf 토큰을 넣어줘야 함 **Form을 보내야 할 때는 csrf를 넣어줘야 함 *
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/"));
+
         //when
-        assertTrue(accountRepository.existsByEmail("test@naver.com"));
+        Account account = accountRepository.findByEmail("test@naver.com");
+        assertNotNull(account);
+        assertNotEquals(account.getPassword(),"1231");
+        assertNotEquals(account,"test@naver.com");
         //then
         then(javaMailSender).should().send(any(SimpleMailMessage.class)); //아무런 인스턴스 타입으로 Send 호출이 되었는가 확인
     }
