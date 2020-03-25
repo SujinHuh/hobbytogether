@@ -6,6 +6,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.Valid;
 
@@ -17,10 +18,10 @@ public class AccountService {
     private final JavaMailSender javaMailSender;
     private final PasswordEncoder passwordEncoder;
 
+    @Transactional
     public void processNewAccount(SignUpForm signUpForm) {
 
         Account newAccount = saveNewAccount(signUpForm);
-        //인증 이메일 발송
         newAccount.generateEmailCheckToken();
         sendSignUpConfirmEmail(newAccount);
     }
@@ -30,12 +31,12 @@ public class AccountService {
                 .email(signUpForm.getEmail())
                 .nickname(signUpForm.getNickname())
                 .password(passwordEncoder.encode(signUpForm.getPassword()))
-                .studyCreateByWeb(true)
+                .studyCreateByEmail(true)
                 .studyEnrollmentResultByWeb(true)
                 .studyUpdateByWeb(true)
                 .build();
 
-        //회원 정보 저장
+
         return accountRepository.save(account);
     }
 
@@ -43,11 +44,12 @@ public class AccountService {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(newAccount.getEmail());
         mailMessage.setSubject("하비 투게더, 회원 가입 인증");
-        mailMessage.setText("/check-email-toke?token=" + newAccount.getEmailCheckToken() +
+        mailMessage.setText("/check-email-token?token=" + newAccount.getEmailCheckToken() +
                 "&email=" + newAccount.getEmail());
 
         javaMailSender.send(mailMessage);
     }
+
 
 
 }

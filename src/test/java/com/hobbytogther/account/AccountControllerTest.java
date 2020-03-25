@@ -75,19 +75,12 @@ class AccountControllerTest {
     @DisplayName("회원 가입 처리_ 입력값 정상")
     @Test
     public void signUpSubmit_CorrectInPut() throws Exception {
-
-
-        /**
-         * 1. 회원 정보 저장
-         * 2. 인증 이메일 발송
-         * 3. 처리 후 첫 페이지로 이동
-         */
         //given
         mockMvc.perform(post("/sign-up")
                 .param("nickname", "sujin")
                 .param("email", "test@naver.com")
                 .param("password", "1231")
-                .with(csrf())) //TODO csrf 토큰을 넣어줘야 함 **Form을 보내야 할 때는 csrf를 넣어줘야 함 *
+                .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/"));
 
