@@ -19,6 +19,8 @@ import static org.mockito.BDDMockito.then;
 
 import static org.mockito.Mockito.mock;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
+import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -51,7 +53,9 @@ class AccountControllerTest {
                 .param("email", "Test@email.con"))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("error"))
-                .andExpect(view().name("account/checked-email"));
+                .andExpect(view().name("account/checked-email"))
+                .andExpect(unauthenticated())//인증 메일이 안된 사용자
+        ;
     }
 
 
@@ -69,8 +73,7 @@ class AccountControllerTest {
                 .email("tetst@mail.com")
                 .password("12345dac")
                 .nickname("sujin")
-                .build()
-                ;
+                .build();
 
         Account newAccount = accountRepository.save(account);
         newAccount.generateEmailCheckToken();
@@ -83,7 +86,9 @@ class AccountControllerTest {
                 .andExpect(model().attributeDoesNotExist("error"))
                 .andExpect(model().attributeExists("nickname"))
                 .andExpect(model().attributeExists("numberOfUser"))
-                .andExpect(view().name("account/checked-email"));
+                .andExpect(view().name("account/checked-email"))
+                .andExpect(authenticated().withUsername("sujin"));//sujin이름으로 인증 메일이 확인이 된 상태
+        ;
 
     }
 
@@ -98,6 +103,7 @@ class AccountControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("account/sign-up"))
                 .andExpect(model().attributeExists("signUpForm"))
+                .andExpect(unauthenticated())
         ;
         //when
 
@@ -116,7 +122,9 @@ class AccountControllerTest {
                 .param("password", "1231")
                 .with(csrf())) //TODO csrf 토큰을 넣어줘야 함 **Form을 보내야 할 때는 csrf를 넣어줘야 함 *
                 .andExpect(status().isOk())
-                .andExpect(view().name("account/sign-up"));
+                .andExpect(view().name("account/sign-up"))
+                .andExpect(unauthenticated())
+        ;
         //when
 
         //then
@@ -134,7 +142,9 @@ class AccountControllerTest {
                 .param("password", "1231")
                 .with(csrf()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/"));
+                .andExpect(view().name("redirect:/"))
+                .andExpect(authenticated().withUsername("sujin"))
+        ;
 
         //when
         Account account = accountRepository.findByEmail("test@naver.com");
