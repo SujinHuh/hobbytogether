@@ -17,6 +17,12 @@ public class MainController {
         //view 에서는 null인지 아닌지 확인
         return "index";
     }
-
+    /**
+     * login 처리
+     */
+    @GetMapping("/login")
+    public String login() {
+        return "login";
+    }
 }
 
