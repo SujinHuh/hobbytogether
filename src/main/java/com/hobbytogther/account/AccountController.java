@@ -76,4 +76,34 @@ public class AccountController {
         return view;
     }
 
+    /**
+     * checkEmail
+     가입 확인 이메일을 전송한 이메일 주소 화면 아래 보여붐
+     재전송 버튼 보여주기
+     재전송 버튼 클릭하면 check-email 요청
+     */
+    @GetMapping("/check-email")
+    public String checkEmail(@CurrentUser Account account, Model model) {
+        model.addAttribute("email",account.getEmail());
+        return "account/check-email";
+    }
+
+    /**
+     * resendConfirmEmail
+     인증 메일을 다시 전송할 수 있는지 확인한
+     보낼 수 있으면 전송, 첫페이지로 리다이렉트
+     보낼 수 없으면 에러 메세지를 모델에 담아주고 이메일 확인 페이지 다시 보여주기
+     */
+    @GetMapping("/resend-confirm-email")
+    public String resendConfirmEmail(@CurrentUser Account account, Model model) {
+        // 이메일을 확인했는데, 보낼 수 없다.
+        if (!account.canSendConfirmEmail()) {
+            model.addAttribute("error", "인증 이메일은 1시간에 한번만 전송할 수 있습니다.");
+            model.addAttribute("email",account.getEmail());
+            return "account/check-email";
+        }
+
+        accountService.sendSignUpConfirmEmail(account);
+        return "redirect:/";
+    }
 }
