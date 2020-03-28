@@ -9,6 +9,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +21,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class AccountService {
+public class AccountService implements UserDetailsService {
 
     private final AccountRepository accountRepository;
     private final JavaMailSender javaMailSender;
@@ -78,5 +81,25 @@ public class AccountService {
         SecurityContext context = SecurityContextHolder.getContext();
         context.setAuthentication(token);//token을 설정해 주면 로그인이된다.
 
+    }
+
+    /**
+     * 로그인을 처리 할 때 : 데이터 베이스에 저장된 정보를 참조해서 인증 /
+     * 데이터 베이스에 있는 정보를 조회 할 수 있는 "UserDetailsService" 만들어 줘야함 <인터페이스는 구현해야함/ 핸드러는 구현 안함>
+     */
+    @Override
+    public UserDetails loadUserByUsername(String emailOrNickname) throws UsernameNotFoundException {
+        Account account = accountRepository.findByEmail(emailOrNickname);
+        if (account == null) {
+            account = accountRepository.findByNickname(emailOrNickname);
+        }
+        if(account == null) {
+            throw new UsernameNotFoundException(emailOrNickname);
+        }
+        /**
+         * 해당하는 User가 있다는 것
+         * principal에 해당하는 객체를 넘기면 됨 - springSecurity 확장한 UserAccount extend User
+         */
+        return new UserAccount(account);
     }
 }
