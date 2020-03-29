@@ -20,6 +20,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class AccountService implements UserDetailsService {
 
@@ -27,7 +28,7 @@ public class AccountService implements UserDetailsService {
     private final JavaMailSender javaMailSender;
     private final PasswordEncoder passwordEncoder;
 
-    @Transactional
+
     public Account processNewAccount(SignUpForm signUpForm) {
 
         Account newAccount = saveNewAccount(signUpForm);
@@ -87,6 +88,7 @@ public class AccountService implements UserDetailsService {
      * 로그인을 처리 할 때 : 데이터 베이스에 저장된 정보를 참조해서 인증 /
      * 데이터 베이스에 있는 정보를 조회 할 수 있는 "UserDetailsService" 만들어 줘야함 <인터페이스는 구현해야함/ 핸드러는 구현 안함>
      */
+    @Transactional(readOnly = true)
     @Override
     public UserDetails loadUserByUsername(String emailOrNickname) throws UsernameNotFoundException {
         Account account = accountRepository.findByEmail(emailOrNickname);
