@@ -81,7 +81,6 @@ public class AccountService implements UserDetailsService {
 
         SecurityContext context = SecurityContextHolder.getContext();
         context.setAuthentication(token);//token을 설정해 주면 로그인이된다.
-
     }
 
     /**
