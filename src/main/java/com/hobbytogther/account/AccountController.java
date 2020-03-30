@@ -11,6 +11,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
@@ -105,5 +106,21 @@ public class AccountController {
 
         accountService.sendSignUpConfirmEmail(account);
         return "redirect:/";
+    }
+    /**
+     * 프로필
+     * nickname으로 파싱, model에 유저정보 넣어주고,
+     * 현재 User가 프로필에 주인인지 확인 @CurrentUser (현재 User정보) 요청을 보내는 사람이 누구인지 알아야 한다.
+     * /nickanme과 일치하면 nickname에 해당하는 account와  조회를 하고있는 account가 일치한다면 - 조작 할 수 있는 권한을 가진 User 인것
+     */
+    @GetMapping("profile/{nickname}")
+    public String viewProfile(@PathVariable String nickname, Model model, @CurrentUser Account account) {
+        Account byNickname = accountRepository.findByNickname(nickname);
+        if(nickname == null) {
+            throw new IllegalStateException(nickname + "해당하는 사용자가 없습니다.");
+        }
+        model.addAttribute(byNickname);
+        model.addAttribute("isOwner",byNickname.equals(account));
+        return "account/profile";
     }
 }
