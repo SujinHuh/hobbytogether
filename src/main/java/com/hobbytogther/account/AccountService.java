@@ -103,4 +103,12 @@ public class AccountService implements UserDetailsService {
          */
         return new UserAccount(account);
     }
+
+    public void completeSignUp(Account account) {
+
+        account.completeSignUp();
+
+        //회원가입시 자동 로그인
+        this.login(account);
+    }
 }

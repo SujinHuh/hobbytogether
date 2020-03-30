@@ -68,10 +68,8 @@ public class AccountController {
             return view;
         }
 
-        account.completeSignUp();
+        accountService.completeSignUp(account); //persistent 상태
 
-        //회원가입시 자동 로그인
-        accountService.login(account);
         model.addAttribute("numberOfUser", accountRepository.count());
         model.addAttribute("nickname", account.getNickname());
         return view;
@@ -119,7 +117,7 @@ public class AccountController {
         if(nickname == null) {
             throw new IllegalStateException(nickname + "해당하는 사용자가 없습니다.");
         }
-        model.addAttribute(byNickname);
+        model.addAttribute(byNickname); //account 객체가 들어감
         model.addAttribute("isOwner",byNickname.equals(account));
         return "account/profile";
     }
