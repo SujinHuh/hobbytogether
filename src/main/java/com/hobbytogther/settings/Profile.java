@@ -2,9 +2,11 @@ package com.hobbytogther.settings;
 
 import com.hobbytogther.domain.Account;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
 @Data
+@NoArgsConstructor // 기본생성자
 public class Profile {
 
     @Length(max = 35)

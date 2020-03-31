@@ -50,17 +50,17 @@ public class Account {
     //lob -> text 타입에 맵핑 이됨
     private String profileImage;
 
-    private boolean studyCreateByEmail;
+    private boolean studyCreatedByEmail;
 
-    private boolean studyCreateByWeb;
+    private boolean studyCreatedByWeb = true;
 
     private boolean studyEnrollmentResultByEmail;
 
-    private boolean studyEnrollmentResultByWeb;
+    private boolean studyEnrollmentResultByWeb = true;
 
-    private boolean studyUpdateByEmail;
+    private boolean studyUpdatedByEmail;
 
-    private boolean studyUpdateByWeb;
+    private boolean studyUpdatedByWeb = true;
 
     private LocalDateTime emailCheckTokenGeneratedAt;
 

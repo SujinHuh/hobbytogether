@@ -20,7 +20,16 @@
                 <a class="list-group-item list-group-item-action list-group-item-danger" th:classappend="${currentMenu == 'account'}? active" href="#" th:href="@{/settings/account}">계정</a>
             </div>
         </div>
-
+        <div class="col-8">
+            <div th:if="${message}" class="alert alert-info alert-dismissible fade show mt-3" role="alert">
+                <span th:text="${message}">메시지</span>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="row">
+                <h2 class="col-sm-12" th:text="${account.nickname}">YourNickName</h2>
+            </div>
         <div class="row mt-3">
             <form class="col-sm-6" action="#"
                   th:action="@{/settings/profile}" th:object="${profile}" method="post" novalidate>
