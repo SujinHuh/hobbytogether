@@ -1,12 +1,11 @@
 package com.hobbytogther.account;
 
 import com.hobbytogther.domain.Account;
-import com.hobbytogther.settings.Profile;
+import com.hobbytogther.settings.form.Profile;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -122,4 +121,8 @@ public class AccountService implements UserDetailsService {
 
     }
 
+    public void updatePassword(Account account, String newPassword) {
+        account.setPassword(passwordEncoder.encode(newPassword)); //passwordEncoder 변환해줘야 한다.
+        accountRepository.save(account); //merge 상태변
+    }
 }

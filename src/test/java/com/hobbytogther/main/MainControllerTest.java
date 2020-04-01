@@ -67,7 +67,7 @@ class MainControllerTest {
         mockMvc.perform(post("/login")
                 .param("username", "sujin@email.com")//springSecurity에서 username, password는 정해져있다.
                 .param("password", "12345678")
-                .with(csrf())) //TODO spring security 를 기본으로 사용하는 기본적으로 csrf 프로텍션이 활성화가 되어있다. csrf 토큰이 같이 전송이 되어야 한다.
+                .with(csrf())) // spring security 를 기본으로 사용하는 기본적으로 csrf 프로텍션이 활성화가 되어있다. csrf 토큰이 같이 전송이 되어야 한다.
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/")) //redirectedUrl root로감
                 .andExpect(authenticated().withUsername("sujin"))//인증이 sujin이름으로 인증이 됨
@@ -89,7 +89,7 @@ class MainControllerTest {
         mockMvc.perform(post("/login")
                 .param("username", "sujin")//springSecurity에서 username, password는 정해져있다.
                 .param("password", "12345678")
-                .with(csrf())) //TODO spring security 를 기본으로 사용하는 기본적으로 csrf 프로텍션이 활성화가 되어있다. csrf 토큰이 같이 전송이 되어야 한다.
+                .with(csrf())) // spring security 를 기본으로 사용하는 기본적으로 csrf 프로텍션이 활성화가 되어있다. csrf 토큰이 같이 전송이 되어야 한다.
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/")) //redirectedUrl root로감
                 .andExpect(authenticated().withUsername("sujin"))//인증이 sujin이름으로 인증이 됨
@@ -108,8 +108,8 @@ class MainControllerTest {
         mockMvc.perform(post("/login")
                 .param("username", "test")
                 .param("password", "5522561")
-                .with(csrf())) //TODO spring security 를 기본으로 사용하는 기본적으로 csrf 프로텍션이 활성화가 되어있다. csrf 토큰이 같이 전송이 되어야 한다.
-                .andExpect(status().is3xxRedirection())  //TODO 성공적으로 redirect가 될 것이다.
+                .with(csrf())) // spring security 를 기본으로 사용하는 기본적으로 csrf 프로텍션이 활성화가 되어있다. csrf 토큰이 같이 전송이 되어야 한다.
+                .andExpect(status().is3xxRedirection())  // 성공적으로 redirect가 될 것이다.
                 .andExpect(redirectedUrl("/login?error")) //로그인에 error로 redirect이 될것
                 .andExpect(unauthenticated())
         ;
@@ -126,8 +126,8 @@ class MainControllerTest {
 
         //when
         mockMvc.perform(post("/logout")
-                .with(csrf())) //TODO spring security 를 기본으로 사용하는 기본적으로 csrf 프로텍션이 활성화가 되어있다. csrf 토큰이 같이 전송이 되어야 한다.
-                .andExpect(status().is3xxRedirection())  //TODO 성공적으로 redirect가 될 것이다.
+                .with(csrf())) // spring security 를 기본으로 사용하는 기본적으로 csrf 프로텍션이 활성화가 되어있다. csrf 토큰이 같이 전송이 되어야 한다.
+                .andExpect(status().is3xxRedirection())  // 성공적으로 redirect가 될 것이다.
                 .andExpect(redirectedUrl("/"))
                 .andExpect(unauthenticated())
         ;

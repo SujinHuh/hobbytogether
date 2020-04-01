@@ -1,4 +1,4 @@
-package com.hobbytogther.settings;
+package com.hobbytogther.settings.form;
 
 import com.hobbytogther.domain.Account;
 import lombok.Data;
