@@ -8,6 +8,7 @@ import com.hobbytogther.settings.form.Profile;
 import com.hobbytogther.settings.validator.Notifications;
 import com.hobbytogther.settings.validator.PasswordFormValidator;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -32,6 +33,7 @@ public class SettingsController {
     static final String SETTINGS_NOTIFICATIONS_URL = "/" + SETTINGS_NOTIFICATIONS_VIEW_NAME;
 
     private final AccountService accountService;
+    private final ModelMapper modelMapper;
 
     @InitBinder("passwordForm")
     public void initBinder(WebDataBinder webDataBinder) {
@@ -42,7 +44,7 @@ public class SettingsController {
     @GetMapping(SETTINGS_PROFILE_URL)
     public String updateProfileForm(@CurrentUser Account account, Model model) {
         model.addAttribute(account);
-        model.addAttribute(new Profile(account));
+        model.addAttribute(modelMapper.map(account, Profile.class)); /** sauce에 account에 들어있는 data로 Profile.class 채워주는것 */
         return SETTINGS_PROFILE_VIEW_NAME;
     }
 
@@ -85,7 +87,7 @@ public class SettingsController {
     @GetMapping(SETTINGS_NOTIFICATIONS_URL)
     public String updateNotificationsForm(@CurrentUser Account account, Model model) {
         model.addAttribute(account);
-        model.addAttribute(new Notifications(account));
+        model.addAttribute(modelMapper.map(account,Notifications.class));
         return SETTINGS_NOTIFICATIONS_VIEW_NAME;
     }
 
