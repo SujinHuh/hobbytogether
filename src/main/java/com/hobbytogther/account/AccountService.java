@@ -132,4 +132,10 @@ public class AccountService implements UserDetailsService {
         modelMapper.map(notifications, account);
         accountRepository.save(account);
     }
+
+    public void updateNickname(Account account, String nickname) {
+        account.setNickname(nickname);
+        accountRepository.save(account); //detached 객체라서 db 반영안함 명시적으로 save 해야한다. save하면 merge가 일어난다.
+        login(account);// 반영이 안되어서 반영
+    }
 }

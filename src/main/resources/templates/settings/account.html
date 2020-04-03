@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragements.html :: head"></head>
+<body class="bg-light">
+
+<div th:replace="fragements.html :: main-nav"></div>
+<div class="container">
+    <div class="row mt-5 justify-content-center">
+        <div class="col-2">
+            <!--            <div th:replace="fragments.html :: settings-menu(currentMenu='notifications')"></div>-->
+
+            <div class="list-group">
+                <a class="list-group-item list-group-item-action" th:classappend="${currentMenu == 'profile'}? active"
+                   href="#" th:href="@{/settings/profile}">프로필</a>
+                <a class="list-group-item list-group-item-action" th:classappend="${currentMenu == 'password'}? active"
+                   href="#" th:href="@{/settings/password}">패스워드</a>
+                <a class="list-group-item list-group-item-action"
+                   th:classappend="${currentMenu == 'notifications'}? active" href="#"
+                   th:href="@{/settings/notifications}">알림</a>
+                <a class="list-group-item list-group-item-action" th:classappend="${currentMenu == 'tags'}? active"
+                   href="#" th:href="@{/settings/tags}">관심 주제</a>
+                <a class="list-group-item list-group-item-action" th:classappend="${currentMenu == 'zones'}? active"
+                   href="#" th:href="@{/settings/zones}">활동 지역</a>
+                <a class="list-group-item list-group-item-action list-group-item-danger"
+                   th:classappend="${currentMenu == 'account'}? active" href="#" th:href="@{/settings/account}">계정</a>
+            </div>
+        </div>
+        <div class="col-8">
+            <div th:if="${message}" class="alert alert-info alert-dismissible fade show mt-3" role="alert">
+                <span th:text="${message}">완료</span>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="row">
+                <h2 class="col-12">닉네임 변경</h2>
+            </div>
+            <div class="row">
+                <form class="needs-validation col-12" th:object="${nicknameForm}" th:action="@{/settings/account}" method="post" novalidate>
+                    <div class="alert alert-warning" role="alert">
+                        닉네임을 변경하면 프로필 페이지 링크도 바뀝니다!
+                    </div>
+                    <div class="form-group">
+                        <input id="nickname" type="text" th:field="*{nickname}" class="form-control" aria-describedby="nicknameHelp" required>
+                        <small id="nicknameHelp" class="form-text text-muted">
+                            공백없이 문자와 숫자로만 3자 이상 20자 이내로 입력하세요. 가입후에 변경할 수 있습니다.
+                        </small>
+                        <small class="invalid-feedback">닉네임을 입력하세요.</small>
+                        <small class="form-text text-danger" th:if="${#fields.hasErrors('nickname')}" th:errors="*{nickname}">nickname Error</small>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-outline-primary" type="submit" aria-describedby="submitHelp">변경하기</button>
+                    </div>
+                </form>
+            </div>
+            <div class="dropdown-divider"></div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <h2 class="text-danger">계정 삭제</h2>
+                    <div class="alert alert-danger" role="alert">
+                        이 계정은 삭제할 수 없습니다.
+                    </div>
+                    <button class="btn btn-outline-danger disabled">계정 삭제</button>
+                </div>
+            </div>
+        </div>
+
+</div>
+
+<!--    <div th:replace="fragments.html :: footer"></div>-->
+</div>
+<!--<script th:replace="fragments.html :: form-validation"></script>-->
+
+<script type="application/javascript" th:fragment="form-validation">
+    (function () {
+        'use strict';
+
+        window.addEventListener('load', function () {
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            var forms = document.getElementsByClassName('needs-validation');
+
+            // Loop over them and prevent submission
+            Array.prototype.filter.call(forms, function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated')
+                }, false)
+            })
+        }, false)
+    }())
+</script>
+
+</body>
+</html>
