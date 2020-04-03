@@ -1,5 +1,6 @@
 package com.hobbytogther.settings;
 
+import com.hobbytogther.account.AccountRepository;
 import com.hobbytogther.account.AccountService;
 import com.hobbytogther.account.CurrentUser;
 import com.hobbytogther.domain.Account;
@@ -42,7 +43,6 @@ public class SettingsController {
     private final AccountService accountService;
     private final NicknameValidator nicknameValidator;
     private final ModelMapper modelMapper;
-
 
     @InitBinder("passwordForm")
     public void initBinder(WebDataBinder webDataBinder) {
@@ -136,5 +136,6 @@ public class SettingsController {
         attributes.addFlashAttribute("message", "닉네임을 수정했습니다.");
         return "redirect:" + SETTINGS_ACCOUNT_URL;
     }
+
 
 }
