@@ -4,6 +4,8 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 import static javax.persistence.FetchType.EAGER;
@@ -44,6 +46,9 @@ public class Account {
     private String occupation;
 
     private String location;
+
+    @ManyToMany
+    private Set<Tag> tags = new HashSet<>();
 
     @Lob
     @Basic(fetch = EAGER)

@@ -2,11 +2,8 @@ package com.hobbytogther.account;
 
 import com.hobbytogther.domain.Account;
 import lombok.RequiredArgsConstructor;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
-import java.time.LocalDateTime;
 
 @Controller
 @RequiredArgsConstructor
@@ -83,7 +79,7 @@ public class AccountController {
      재전송 버튼 클릭하면 check-email 요청
      */
     @GetMapping("/check-email")
-    public String checkEmail(@CurrentUser Account account, Model model) {
+    public String checkEmail(@CurrentAccount Account account, Model model) {
         model.addAttribute("email",account.getEmail());
         return "account/check-email";
     }
@@ -95,7 +91,7 @@ public class AccountController {
      보낼 수 없으면 에러 메세지를 모델에 담아주고 이메일 확인 페이지 다시 보여주기
      */
     @GetMapping("/resend-confirm-email")
-    public String resendConfirmEmail(@CurrentUser Account account, Model model) {
+    public String resendConfirmEmail(@CurrentAccount Account account, Model model) {
         // 이메일을 확인했는데, 보낼 수 없다.
         if (!account.canSendConfirmEmail()) {
             model.addAttribute("error", "인증 이메일은 1시간에 한번만 전송할 수 있습니다.");
@@ -113,7 +109,7 @@ public class AccountController {
      * /nickanme과 일치하면 nickname에 해당하는 account와  조회를 하고있는 account가 일치한다면 - 조작 할 수 있는 권한을 가진 User 인것
      */
     @GetMapping("profile/{nickname}")
-    public String viewProfile(@PathVariable String nickname, Model model, @CurrentUser Account account) {
+    public String viewProfile(@PathVariable String nickname, Model model, @CurrentAccount Account account) {
         Account byNickname = accountRepository.findByNickname(nickname);
         if(nickname == null) {
             throw new IllegalStateException(nickname + "해당하는 사용자가 없습니다.");

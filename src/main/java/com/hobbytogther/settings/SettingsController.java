@@ -1,8 +1,7 @@
 package com.hobbytogther.settings;
 
-import com.hobbytogther.account.AccountRepository;
 import com.hobbytogther.account.AccountService;
-import com.hobbytogther.account.CurrentUser;
+import com.hobbytogther.account.CurrentAccount;
 import com.hobbytogther.domain.Account;
 import com.hobbytogther.settings.form.NicknameForm;
 import com.hobbytogther.settings.form.PasswordForm;
@@ -56,7 +55,7 @@ public class SettingsController {
 
     /**현재 사용자 정보 넣어줌*/
     @GetMapping(SETTINGS_PROFILE_URL)
-    public String updateProfileForm(@CurrentUser Account account, Model model) {
+    public String updateProfileForm(@CurrentAccount Account account, Model model) {
         model.addAttribute(account);
         model.addAttribute(modelMapper.map(account, Profile.class)); /** sauce에 account에 들어있는 data로 Profile.class 채워주는것 */
         return SETTINGS_PROFILE_VIEW_NAME;
@@ -65,7 +64,7 @@ public class SettingsController {
     /**현재 사용자 정보 수정*/
     @PostMapping(SETTINGS_PROFILE_URL)
     //errors가 (ModelAttribute)바인딩 에러를 받아주는 폼 애트리 뷰트 객체 오른쪽에 두어야 한다. (ModelAttribute)생략 가능
-    public String updateProfile(@CurrentUser Account account, @Valid @ModelAttribute Profile profile, Errors errors,
+    public String updateProfile(@CurrentAccount Account account, @Valid @ModelAttribute Profile profile, Errors errors,
                                 Model model, RedirectAttributes attributes) {
         if (errors.hasErrors()) {
             model.addAttribute(account);
@@ -79,7 +78,7 @@ public class SettingsController {
 
     /** PASSWORD FormValidator 를 사용해서 판별 */
     @GetMapping(SETTINGS_PASSWORD_URL)
-    public String updatePasswordForm(@CurrentUser Account account, Model model) {
+    public String updatePasswordForm(@CurrentAccount Account account, Model model) {
         model.addAttribute(account);
         model.addAttribute(new PasswordForm());
         return SETTINGS_PASSWORD_VIEW_NAME;
@@ -87,7 +86,7 @@ public class SettingsController {
 
     /**Update하려면 현재 접속해있는 사용자*/
     @PostMapping(SETTINGS_PASSWORD_URL)
-    public String updatePassword(@CurrentUser Account account, @Valid PasswordForm passwordForm, Errors errors,
+    public String updatePassword(@CurrentAccount Account account, @Valid PasswordForm passwordForm, Errors errors,
                                  Model model, RedirectAttributes attributes) {
         if(errors.hasErrors()) {
             model.addAttribute(account);
@@ -99,14 +98,14 @@ public class SettingsController {
     }
 
     @GetMapping(SETTINGS_NOTIFICATIONS_URL)
-    public String updateNotificationsForm(@CurrentUser Account account, Model model) {
+    public String updateNotificationsForm(@CurrentAccount Account account, Model model) {
         model.addAttribute(account);
         model.addAttribute(modelMapper.map(account,Notifications.class));
         return SETTINGS_NOTIFICATIONS_VIEW_NAME;
     }
 
     @PostMapping(SETTINGS_NOTIFICATIONS_URL)
-    public String updateNotifications(@CurrentUser Account account, @Valid Notifications notifications, Errors errors,
+    public String updateNotifications(@CurrentAccount Account account, @Valid Notifications notifications, Errors errors,
                                       Model model, RedirectAttributes attributes) {
         if (errors.hasErrors()) {
             model.addAttribute(account);
@@ -118,14 +117,14 @@ public class SettingsController {
         return "redirect:" + SETTINGS_NOTIFICATIONS_URL;
     }
     @GetMapping(SETTINGS_ACCOUNT_URL)
-    public String updateAccountForm(@CurrentUser Account account, Model model) {
+    public String updateAccountForm(@CurrentAccount Account account, Model model) {
         model.addAttribute(account);
         model.addAttribute(modelMapper.map(account, NicknameForm.class));
         return SETTINGS_ACCOUNT_VIEW_NAME;
     }
 
     @PostMapping(SETTINGS_ACCOUNT_URL)
-    public String updateAccount(@CurrentUser Account account, @Valid NicknameForm nicknameForm, Errors errors,
+    public String updateAccount(@CurrentAccount Account account, @Valid NicknameForm nicknameForm, Errors errors,
                                 Model model, RedirectAttributes attributes) {
         if (errors.hasErrors()) {
             model.addAttribute(account);
@@ -137,5 +136,10 @@ public class SettingsController {
         return "redirect:" + SETTINGS_ACCOUNT_URL;
     }
 
-
+    /** Tag URL - updateTags */
+    @GetMapping(SETTINGS_TAGS_URL)
+    public String updateTags(@CurrentAccount Account account, Model model) {
+        model.addAttribute(account);
+        return SETTINGS_TAGS_VIEW_NAME;
+    }
 }
