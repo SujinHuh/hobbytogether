@@ -12,7 +12,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
-
+import static com.hobbytogther.settings.SettingsController.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -53,10 +53,10 @@ class SettingsControllerTest {
     @DisplayName("프로필 수정 - 폼")
     @Test
     public void updateProfile_Form() throws Exception {
-        mockMvc.perform(get(SettingsController.SETTINGS_PROFILE_URL))
+        mockMvc.perform(get(ROOT + SETTINGS + PASSWORD))
                 .andExpect(status().isOk()) // isOk로 폼이 나와야 한다.
                 .andExpect(model().attributeExists("account")) //폼에 모델이 어트리뷰트가 있어야 하고
-                .andExpect(model().attributeExists("profile")) //프로파일이 있어야 한다.
+                .andExpect(model().attributeExists("passwordForm")) //프로파일이 있어야 한다.
         ;
 
         /** URL 자체가 인증된 사용자만 접근이 가능한것  @WithAccount("sujin") 없으면 동작하지 않는다.*/
@@ -67,11 +67,11 @@ class SettingsControllerTest {
     @Test
     public void updateProfile() throws Exception {
         String bio = "짧은 자기 소개를 하겠습니다.";
-        mockMvc.perform(post(SettingsController.SETTINGS_PROFILE_URL)
+        mockMvc.perform(post(ROOT + SETTINGS + PROFILE)
                 .param("bio", bio)
                 .with(csrf()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl(SettingsController.SETTINGS_PROFILE_URL))
+                .andExpect(redirectedUrl(ROOT + SETTINGS + PROFILE))
                 .andExpect(flash().attributeExists("message"))
         ;
 
@@ -84,13 +84,14 @@ class SettingsControllerTest {
     @Test
     public void updateProfile_error() throws Exception {
         String bio = "긴~~~긴 자기 소개를 하겠습니다.긴~~~긴 자기 소개를 하겠습니.긴~~~긴 자기 소개를 하겠습니다.긴~~~긴 자기 소개를 하겠습니다.긴~~~긴 자기 소개를 하겠습니다.";
-        mockMvc.perform(post(SettingsController.SETTINGS_PROFILE_URL)
+        mockMvc.perform(post(ROOT + SETTINGS + PROFILE)
                 .param("bio", bio)
                 .with(csrf()))
                 .andExpect(status().isOk())
-                .andExpect(view().name(SettingsController.SETTINGS_PROFILE_VIEW_NAME))
+                .andExpect(view().name(SETTINGS + PROFILE))
                 .andExpect(model().attributeExists("account"))
                 .andExpect(model().attributeExists("profile"))
+
                 .andExpect(model().hasErrors())
         ;
 
@@ -103,7 +104,7 @@ class SettingsControllerTest {
     @Test
     public void updatePassword() throws Exception {
 
-        mockMvc.perform(get(SettingsController.SETTINGS_PASSWORD_URL))
+        mockMvc.perform(get(ROOT + SETTINGS + PASSWORD))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("account"))
                 .andExpect(model().attributeExists("passwordForm"))
@@ -115,12 +116,12 @@ class SettingsControllerTest {
     @DisplayName("패스워드 수정 - 입력값 정상")
     @Test
     void updatePassword_success() throws Exception {
-        mockMvc.perform(post(SettingsController.SETTINGS_PASSWORD_URL)
+        mockMvc.perform(post(ROOT + SETTINGS + PASSWORD)
                 .param("newPassword", "12345678")
                 .param("newPasswordConfirm", "12345678")
                 .with(csrf()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl(SettingsController.SETTINGS_PASSWORD_URL))
+                .andExpect(redirectedUrl(ROOT + SETTINGS + PASSWORD))
                 .andExpect(flash().attributeExists("message"));
 
         Account sujin = accountRepository.findByNickname("sujin");
@@ -131,12 +132,13 @@ class SettingsControllerTest {
     @DisplayName("패스워드 수정 - 입력값 에러 - 패스워드 불일치")
     @Test
     void updatePassword_fail() throws Exception {
-        mockMvc.perform(post(SettingsController.SETTINGS_PASSWORD_URL)
+        mockMvc.perform(post(ROOT + SETTINGS + PASSWORD)
                 .param("newPassword", "12345678")
                 .param("newPasswordConfirm", "11111111")
                 .with(csrf()))
                 .andExpect(status().isOk())
-                .andExpect(view().name(SettingsController.SETTINGS_PASSWORD_VIEW_NAME))
+                .andExpect(view().name(SETTINGS + PASSWORD))
+                .andExpect(model().hasErrors())
                 .andExpect(model().hasErrors())
                 .andExpect(model().attributeExists("passwordForm"))
                 .andExpect(model().attributeExists("account"))
