@@ -3,14 +3,18 @@ package com.hobbytogther.settings;
 import com.hobbytogther.account.AccountService;
 import com.hobbytogther.account.CurrentAccount;
 import com.hobbytogther.domain.Account;
+import com.hobbytogther.domain.Tag;
 import com.hobbytogther.settings.form.NicknameForm;
 import com.hobbytogther.settings.form.PasswordForm;
 import com.hobbytogther.settings.form.Profile;
+import com.hobbytogther.settings.form.TagForm;
 import com.hobbytogther.settings.validator.NicknameValidator;
 import com.hobbytogther.settings.validator.Notifications;
 import com.hobbytogther.settings.validator.PasswordFormValidator;
+import com.hobbytogther.tag.TagRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -39,7 +43,7 @@ public class SettingsController {
     private final AccountService accountService;
     private final NicknameValidator nicknameValidator;
     private final ModelMapper modelMapper;
-
+    private final TagRepository tagRepository;
 
     @InitBinder("passwordForm")
     public void initBinder(WebDataBinder webDataBinder) {
@@ -139,5 +143,25 @@ public class SettingsController {
     public String updateTags(@CurrentAccount Account account, Model model) {
         model.addAttribute(account);
         return SETTINGS + TAGS;
+    }
+
+    /** Tag URL - addTag */
+    @PostMapping(TAGS + "/add")         //요청이 본문에 들어옴 @RequestBody - TagForm을 받아서
+    @ResponseBody /** AJAX 요청 응답 자체가 ResponseBody 되어야 한다. 반환 값은 ResponseEntity */
+    public ResponseEntity addTag(@CurrentAccount Account account, @RequestBody TagForm tagForm) {
+        String title = tagForm.getTagTitle();
+         Tag tag = tagRepository.findByTitle(title);
+
+         if(tag == null) {
+             tag = tagRepository.save(Tag.builder().title(tagForm.getTagTitle()).build());
+         }
+         accountService.addTag(account,tag);
+        return ResponseEntity.ok().build();
+        /**        /**Optional
+         Tag tag = tagRepository.findByTitle(title) // 태그 파일에서 찾아보고 없으면
+         .orElseGet(() -> tagRepository.save(Tag.builder() //타이틀에 해당하는 것을 저장해서
+         .title(tagForm.getTagTitle())// 받아온다.
+         .build())); */
+
     }
 }

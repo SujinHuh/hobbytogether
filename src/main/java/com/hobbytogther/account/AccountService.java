@@ -1,6 +1,7 @@
 package com.hobbytogther.account;
 
 import com.hobbytogther.domain.Account;
+import com.hobbytogther.domain.Tag;
 import com.hobbytogther.settings.validator.Notifications;
 import com.hobbytogther.settings.form.Profile;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -149,4 +151,13 @@ public class AccountService implements UserDetailsService {
         javaMailSender.send(mailMessage);
     }
 
+    public void addTag(Account account, Tag tag) {
+        /** Account detached객체여서 먼저 읽어와야 한다.*/
+        /** to many로 끝나는 관계는 값들이 널 값이다.  - Lazy 로딩 불가 detached 객체이니까 */
+        Optional<Account> byId = accountRepository.findById(account.getId()); // Eager 패치 읽어옴
+        byId.ifPresent(a -> a.getTags().add(tag)); //만약 있으면 account에 tag를 추가하라
+
+//        accountRepository.getOne()/**Lazy 로딩 필요한 순간에만 읽어옴 엔티티 매니저를 통해서 */
+
+    }
 }
