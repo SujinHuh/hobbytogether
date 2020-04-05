@@ -171,4 +171,17 @@ public class SettingsController {
          .build())); */
 
     }
+
+    /** Tag URL - removeTag */
+    @PostMapping( TAGS + "/remove")
+    @ResponseBody /** AJAX 요청 응답 자체가 ResponseBody 되어야 한다. 반환 값은 ResponseEntity */
+    public ResponseEntity removeTag(@CurrentAccount Account account, @RequestBody TagForm tagForm){
+        String title = tagForm.getTagTitle();
+        Tag tag = tagRepository.findByTitle(title);
+        if(tag == null) {
+            return ResponseEntity.badRequest().build(); //tag가 없는 tag를 삭제
+        }
+        accountService.removeTag(account,tag);
+        return ResponseEntity.ok().build();
+    }
 }

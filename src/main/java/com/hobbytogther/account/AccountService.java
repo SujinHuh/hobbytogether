@@ -162,6 +162,11 @@ public class AccountService implements UserDetailsService {
 
     }
 
+    public void removeTag(Account account, Tag tag) {
+        Optional<Account> byId = accountRepository.findById(account.getId()); // Eager 패치 읽어옴
+        byId.ifPresent(a -> a.getTags().remove(tag));
+    }
+
     public Set<Tag> getTags(Account account) {
         Optional<Account> byId = accountRepository.findById(account.getId());
         return byId.orElseThrow().getTags(); // 없으면 error 있으면 tag정보를
