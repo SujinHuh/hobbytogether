@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -99,7 +100,7 @@ public class AccountService implements UserDetailsService {
         if (account == null) {
             account = accountRepository.findByNickname(emailOrNickname);
         }
-        if(account == null) {
+        if (account == null) {
             throw new UsernameNotFoundException(emailOrNickname);
         }
         /**
@@ -119,7 +120,7 @@ public class AccountService implements UserDetailsService {
     public void updateProfile(Account account, Profile profile) {
         /** modelMapper.map() -> map은 sauce에 있는 data를 목적지로 복사 해주는것*/
         /** 즉, profile에 있는 값을 account에 담아주는 것 , map 입장에서 sauce는 profile , destination은 account */
-        modelMapper.map(profile,account);
+        modelMapper.map(profile, account);
         accountRepository.save(account);
 
     }
@@ -159,5 +160,10 @@ public class AccountService implements UserDetailsService {
 
 //        accountRepository.getOne()/**Lazy 로딩 필요한 순간에만 읽어옴 엔티티 매니저를 통해서 */
 
+    }
+
+    public Set<Tag> getTags(Account account) {
+        Optional<Account> byId = accountRepository.findById(account.getId());
+        return byId.orElseThrow().getTags(); // 없으면 error 있으면 tag정보를
     }
 }

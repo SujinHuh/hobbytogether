@@ -24,6 +24,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import static com.hobbytogther.settings.SettingsController.ROOT;
 import static com.hobbytogther.settings.SettingsController.SETTINGS;
 import javax.validation.Valid;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping(ROOT + SETTINGS)
@@ -141,8 +144,12 @@ public class SettingsController {
     /** Tag URL - updateTags */
     @GetMapping(TAGS)
     public String updateTags(@CurrentAccount Account account, Model model) {
-        model.addAttribute(account);
+        //Tag 정보조회 //문자열 타입의 List
+        Set<Tag> tags = accountService.getTags(account);
+        /*현재 User가 들고 있는 tag 전달*/       // tag stream을 map으로 안에 들어있는 tag들을 tagtitle만 가져옴 : tag가 문자열로 바뀌는것 문자열을 수집해서 List로 변환해서 전달
+        model.addAttribute("tags",tags.stream().map(Tag::getTitle).collect(Collectors.toList()));
         return SETTINGS + TAGS;
+
     }
 
     /** Tag URL - addTag */
