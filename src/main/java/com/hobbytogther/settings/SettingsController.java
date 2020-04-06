@@ -144,21 +144,24 @@ public class SettingsController {
         return "redirect:/" + SETTINGS + ACCOUNT;
     }
 
+
     /** Tag URL - updateTags */
     @GetMapping(TAGS)
     public String updateTags(@CurrentAccount Account account, Model model) throws JsonProcessingException {
-        //Tag 정보조회 //문자열 타입의 List
+        model.addAttribute(account);
+        //Tag 정보조회
+        //문자열 타입의 List
         Set<Tag> tags = accountService.getTags(account);
-        /*현재 User가 들고 있는 tag 전달*/       // tag stream을 map으로 안에 들어있는 tag들을 tagtitle만 가져옴 : tag가 문자열로 바뀌는것 문자열을 수집해서 List로 변환해서 전달
+        /*현재 User가 들고 있는 tag 전달*/       /** tag stream을 map으로 안에 들어있는 tag들을 tagtitle만 가져옴 : tag가 문자열로 바뀌는것 문자열을 수집해서 List로 변환해서 전달 */
         model.addAttribute("tags",tags.stream().map(Tag::getTitle).collect(Collectors.toList()));
         /** Tag 목록을 화이트 리스트로 제공해야함
          stream으로 맵핑을 해서 타입이 tag인데, StringType(tag 이름)으로 변환 List로 변환 하면 alltags (전체태그)가 나옴*/
         List<String> allTags = tagRepository.findAll().stream().map(Tag::getTitle).collect(Collectors.toList());
         /** objectMapper - alltags를 jason으로 변환해서 내보냄*/
         model.addAttribute("whitelist", objectMapper.writeValueAsString(allTags));
-
         return SETTINGS + TAGS;
     }
+
 
     /** Tag URL - addTag */
     @PostMapping(TAGS + "/add")         //요청이 본문에 들어옴 @RequestBody - TagForm을 받아서

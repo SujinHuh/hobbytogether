@@ -1,17 +1,24 @@
 package com.hobbytogther.settings;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hobbytogther.WithAccount;
 import com.hobbytogther.account.AccountRepository;
 import com.hobbytogther.account.AccountService;
 import com.hobbytogther.domain.Account;
+import com.hobbytogther.domain.Tag;
+import com.hobbytogther.settings.form.TagForm;
+import com.hobbytogther.tag.TagRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
+
 import static com.hobbytogther.settings.SettingsController.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -26,6 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * 다양한 수를 고려해서 해야 한다.
  * 단위 테스트를
  */
+@Transactional
 @SpringBootTest
 @AutoConfigureMockMvc
 class SettingsControllerTest {
@@ -41,6 +49,12 @@ class SettingsControllerTest {
 
     @Autowired
     PasswordEncoder passwordEncoder;
+
+    @Autowired
+    ObjectMapper objectMapper;
+
+    @Autowired
+    TagRepository tagRepository;
 
     @AfterEach
     void afterEach() {
@@ -144,5 +158,71 @@ class SettingsControllerTest {
                 .andExpect(model().attributeExists("account"))
 
         ;
+    }
+
+    /** Tag Test */
+
+    @WithAccount("sujin")
+    @DisplayName("계정 태그 수정 폼")
+    @Test
+    void updateTagsFrom() throws Exception {
+        /** (이전과 다른 Test 작성) data를 보내는게 다르다. 이전에는 form에 보내는 것 form에 들어가는 데이터를 param으로 채움 */
+        mockMvc.perform(get(ROOT + SETTINGS + TAGS))
+                .andExpect(view().name(SETTINGS + TAGS))
+                .andExpect(model().attributeExists("account"))
+                .andExpect(model().attributeExists("whitelist"))
+                .andExpect(model().attributeExists("tags"))
+                ;
+    }
+
+    @WithAccount("sujin")
+    @DisplayName("계정에 태그 추가")
+    @Test
+    void addTag() throws Exception {
+
+        /** JSON 문자열 - 아래 객체를 JSON으로 변환한 형태의 문자열 */
+        TagForm tagForm = new TagForm();
+        tagForm.setTagTitle("newTag");
+
+        mockMvc.perform(post(ROOT + SETTINGS + TAGS + "/add")
+                .contentType(MediaType.APPLICATION_JSON) /**요청안에 param으로 들어오는 것 아니라 '본문'으로 들어온다. '본문'의 TYPE JSON으로 들어온다.*/
+                .content(objectMapper.writeValueAsBytes(tagForm)) /**JSON문자 열로 들어온다. **ObjectMapper로 객체를 JSON으로 변환 가능 */
+                .with(csrf()))/**Post요청 할 때는 반드시!! csrf */
+                .andExpect(status().isOk())
+        ;
+
+        /** tag가 실제로 저장이 되었는지 확인 */
+        Tag newTag = tagRepository.findByTitle("newTag");
+        assertNotNull(newTag);
+        Account sujin = accountRepository.findByNickname("sujin"); /** 리파지토지토리에서 꺼내온것까지 트랜잭션 왜? 리파지토리 통해서 가져왔으니까 */
+        /** 가져온 sujin 상태는? persistent 상태가 아니다. 'detached'상태이다. persistent 상태가 되려면 '전부(클래스)'가 트랜젝션이어야 한다. */
+        /** detached 상태에다가 "추가적으로 정보를가져 올 수 없다." 즉, 정보를 가져오려면, persistent 상태여야한다. */
+        /** persistent 상태를 만드려면 @Transactional추가 해야한다.*/
+        assertTrue(sujin.getTags().contains(newTag)); /** getTags가 계정안에 들어있느냐 /assertTrue 사실인가 */
+        // getTags : Lazy로딩
+    }
+
+    @WithAccount("sujin")
+    @DisplayName("계정에 태그 삭제")
+    @Test
+    void removeTag() throws Exception {
+        Account sujin = accountRepository.findByNickname("sujin");
+        Tag newTage = tagRepository.save(Tag.builder().title("newTag").build());
+        accountService.addTag(sujin, newTage);
+
+        assertTrue(sujin.getTags().contains(newTage));
+
+        TagForm tagForm = new TagForm();
+        tagForm.setTagTitle("newTag");
+
+        mockMvc.perform(post(ROOT + SETTINGS + TAGS + "/remove")
+                .contentType(MediaType.APPLICATION_JSON) /**요청안에 param으로 들어오는 것 아니라 '본문'으로 들어온다. '본문'의 TYPE JSON으로 들어온다. */
+                .content(objectMapper.writeValueAsBytes(tagForm)) /**JSON문자 열로 들어온다. **ObjectMapper로 객체를 JSON으로 변환 가능 */
+                .with(csrf()))/**Post요청 할 때는 반드시!! csrf */
+                .andExpect(status().isOk())
+        ;
+        assertFalse(sujin.getTags().contains(newTage));
+
+
     }
 }
