@@ -202,6 +202,7 @@ class SettingsControllerTest {
         // getTags : Lazy로딩
     }
 
+
     @WithAccount("sujin")
     @DisplayName("계정에 태그 삭제")
     @Test
@@ -216,9 +217,9 @@ class SettingsControllerTest {
         tagForm.setTagTitle("newTag");
 
         mockMvc.perform(post(ROOT + SETTINGS + TAGS + "/remove")
-                .contentType(MediaType.APPLICATION_JSON) /**요청안에 param으로 들어오는 것 아니라 '본문'으로 들어온다. '본문'의 TYPE JSON으로 들어온다. */
-                .content(objectMapper.writeValueAsBytes(tagForm)) /**JSON문자 열로 들어온다. **ObjectMapper로 객체를 JSON으로 변환 가능 */
-                .with(csrf()))/**Post요청 할 때는 반드시!! csrf */
+                .contentType(MediaType.APPLICATION_JSON) // TODO *요청안에 param으로 들어오는 것 아니라 '본문'으로 들어온다. '본문'의 TYPE JSON으로 들어온다.
+                .content(objectMapper.writeValueAsBytes(tagForm)) //TODO *JSON문자 열로 들어온다. **ObjectMapper로 객체를 JSON으로 변환 가능
+                .with(csrf()))//TODO *Post요청 할 때는 반드시!! csrf
                 .andExpect(status().isOk())
         ;
         assertFalse(sujin.getTags().contains(newTage));

@@ -2,6 +2,7 @@ package com.hobbytogther.account;
 
 import com.hobbytogther.domain.Account;
 import com.hobbytogther.domain.Tag;
+import com.hobbytogther.domain.Zone;
 import com.hobbytogther.settings.validator.Notifications;
 import com.hobbytogther.settings.form.Profile;
 import lombok.RequiredArgsConstructor;
@@ -163,5 +164,19 @@ public class AccountService implements UserDetailsService {
     public Set<Tag> getTags(Account account) {
         Optional<Account> byId = accountRepository.findById(account.getId());
         return byId.orElseThrow().getTags(); // 없으면 error 있으면 tag정보를
+    }
+    public Set<Zone> getZones(Account account) {
+        Optional<Account> byId = accountRepository.findById(account.getId());
+        return byId.orElseThrow().getZones();
+    }
+
+    public void addZone(Account account, Zone zone) {
+        Optional<Account> byId = accountRepository.findById(account.getId());
+        byId.ifPresent(a -> a.getZones().add(zone));
+    }
+
+    public void removeZone(Account account, Zone zone) {
+        Optional<Account> byId = accountRepository.findById(account.getId());
+        byId.ifPresent(a -> a.getZones().remove(zone));
     }
 }

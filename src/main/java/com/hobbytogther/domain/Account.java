@@ -50,6 +50,9 @@ public class Account {
     @ManyToMany
     private Set<Tag> tags = new HashSet<>();
 
+    @ManyToMany
+    private Set<Zone> zones = new HashSet<>();
+
     @Lob
     @Basic(fetch = EAGER)
     //lob -> text 타입에 맵핑 이됨
