@@ -1,6 +1,8 @@
 package com.hobbytogther.account;
 
 import com.hobbytogther.domain.Account;
+import com.hobbytogther.mail.EmailMessage;
+import com.hobbytogther.mail.EmailService;
 import org.hibernate.tool.schema.internal.exec.JdbcConnectionAccessConnectionProviderImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,7 +40,7 @@ class AccountControllerTest {
     private AccountRepository accountRepository;
 
     @MockBean
-    JavaMailSender javaMailSender;
+    EmailService emailService;
 
     @DisplayName("회원원가입 인증 메일 - 입력값 오류")
     @Test
@@ -152,6 +154,6 @@ class AccountControllerTest {
         assertNotEquals(account.getPassword(), "1231");
         assertNotEquals(account, "test@naver.com");
         //then
-        then(javaMailSender).should().send(any(SimpleMailMessage.class)); //아무런 인스턴스 타입으로 Send 호출이 되었는가 확인
+        then(emailService).should().sendEmail(any(EmailMessage.class)); //아무런 인스턴스 타입으로 Send 호출이 되었는가 확인
     }
 }
