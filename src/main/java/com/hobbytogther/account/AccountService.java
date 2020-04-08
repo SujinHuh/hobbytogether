@@ -1,5 +1,6 @@
 package com.hobbytogther.account;
 
+import com.hobbytogther.config.AppProperties;
 import com.hobbytogther.domain.Account;
 import com.hobbytogther.domain.Tag;
 import com.hobbytogther.domain.Zone;
@@ -23,6 +24,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -43,7 +46,8 @@ public class AccountService implements UserDetailsService {
     private final EmailService emailService;
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
-
+    private final TemplateEngine templateEngine; //타임리프 핵심엔진 ,템플릿 엔진 사용
+    private final AppProperties appProperties;
 
     public Account processNewAccount(SignUpForm signUpForm) {
 
@@ -62,16 +66,25 @@ public class AccountService implements UserDetailsService {
 
     /** html, 개발용 콘솔 - '추상화' 시킴*/
     public void sendSignUpConfirmEmail(Account newAccount) {
+        Context context = new Context(); // 모델
+        context.setVariable("link","/check-email-token?token=" + newAccount.getEmailCheckToken() +
+                "&email=" + newAccount.getEmail());  // 모델에 필요한 정보
+
+        context.setVariable("nickname", newAccount.getNickname());
+        context.setVariable("lickName", "이메일 인증 확인하기");
+        context.setVariable("message", "스터디올래 서비스를 사용하려면 링크를 클릭하세요");
+        context.setVariable("host",appProperties.getHost()); //AppProperties 에 있는 값을 사용
+
+        String message = templateEngine.process("mail/simple-link", context);
+
 
         EmailMessage emailMessage = EmailMessage.builder()
                 .to(newAccount.getEmail())
                 .subject("HobbyTogether, 회원 가입 인증")
-                .message("/check-email-token?token=" + newAccount.getEmailCheckToken() +
-                        "&email=" + newAccount.getEmail())
+                .message(message) //html message send
                 .build();
 
         emailService.sendEmail(emailMessage);
-
     }
 
 
@@ -150,11 +163,22 @@ public class AccountService implements UserDetailsService {
     }
 
     public void sendLoginLink(Account account) {
+
+        Context context = new Context(); // 모델
+        context.setVariable("link","/login-by-email?token=" + account.getEmailCheckToken() +
+                "&email=" + account.getEmail());  // 모델에 필요한 정보
+
+        context.setVariable("nickname", account.getNickname());
+        context.setVariable("lickName", "이메일로 로그인");
+        context.setVariable("message", "로그인 하려면 아래 링크를 클릭하세요");
+        context.setVariable("host",appProperties.getHost()); //AppProperties 에 있는 값을 사용
+
+        String message = templateEngine.process("mail/simple-link", context);
+
         EmailMessage emailMessage = EmailMessage.builder()
                 .to(account.getEmail())
-                .subject("스터디올래, 로그인 링크")
-                .message("/login-by-email?token=" + account.getEmailCheckToken() +
-                        "&email=" + account.getEmail())
+                .subject("HobbyTogether, 로그인 링크")
+                .message(message)
                 .build();
         emailService.sendEmail(emailMessage);
     }
