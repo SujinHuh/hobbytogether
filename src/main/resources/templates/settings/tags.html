@@ -33,9 +33,11 @@
                         참여하고 싶은 취미 주제를 입력해 주세요. 해당 주제의 취미모임이 생기면 알림을 받을 수 있습니다. 태그를 입력하고 콤마(,)
                         또는 엔터를 입력하세요.
                     </div>
-                    <input id="tags" type="text" name="tags" class="tagify-outside" aria-describedby="tagHelp"/>
                     <!--                    Lsit<String> tags = List.of("Spring","Hibernate", "JPA") ==> Sping,Hibernate,JPA-->
                     <!--                    #strings 유틸을 사용해서 Join을 하면됨 -->
+                    <div id="whitelist" th:text="${whitelist}" hidden></div>
+                    <input id="tags" type="text" name="tags" th:value="${#strings.listJoin(tags, ',')}"
+                           class="tagify-outside" aria-describedby="tagHelp"/>
 
                 </div>
             </div>
@@ -44,15 +46,15 @@
     </div>
 </div>
 <script src="/node_modules/@yaireo/tagify/dist/tagify.min.js"></script>
-<!--<script type="application/javascript" th:inline="javascript">-->
-<!--    $(function() {-->
-<!--        var csrfToken = /*[[${_csrf.token}]]*/ null;-->
-<!--        var csrfHeader = /*[[${_csrf.headerName}]]*/ null;-->
-<!--        $(document).ajaxSend(function (e, xhr, options) {-->
-<!--            xhr.setRequestHeader(csrfHeader, csrfToken);-->
-<!--        });-->
-<!--    });-->
-<!--</script>-->
+<script type="application/javascript" th:inline="javascript">
+    $(function() {
+        var csrfToken = /*[[${_csrf.token}]]*/ null;
+        var csrfHeader = /*[[${_csrf.headerName}]]*/ null;
+        $(document).ajaxSend(function (e, xhr, options) {
+            xhr.setRequestHeader(csrfHeader, csrfToken);
+        });
+    });
+</script>
 <script type="application/javascript">
     $(function () {
         function tagRequest(url, tagTitle) {
@@ -83,6 +85,7 @@
 
         var tagify = new Tagify(tagInput, {
             pattern: /^.{0,20}$/,
+            whitelist: JSON.parse(document.querySelector("#whitelist").textContent),
             dropdown : {
                 enabled: 1, // suggest tags after a single character input
             } // map tags
