@@ -45,8 +45,9 @@ public class HobbyController {
     }
 
     @PostMapping("/new-hobby")
-    public String newHobby(@CurrentAccount Account account, @Valid HobbyForm hobbyForm, Errors errors) {
+    public String newHobby(@CurrentAccount Account account, @Valid HobbyForm hobbyForm, Errors errors,Model model) {
         if (errors.hasErrors()) {
+            model.addAttribute(account);
             return "hobby/form";
         }
         Hobby newHobby = hobbyService.createNewHobby(modelMapper.map(hobbyForm, Hobby.class), account);
@@ -61,6 +62,14 @@ public class HobbyController {
         model.addAttribute(account);
         model.addAttribute(hobbyRepository.findByPath(path));
         return "hobby/view";
+    }
+
+    /** Hobby 구성원 조회 */
+    @GetMapping("/hobby/{path}/members")
+    public String viewHobbyMembers(@CurrentAccount Account account, @PathVariable String path, Model model) {
+        model.addAttribute(account);
+        model.addAttribute(hobbyRepository.findByPath(path));
+        return "hobby/members";
     }
 
 }
