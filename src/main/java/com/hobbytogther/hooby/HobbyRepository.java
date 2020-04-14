@@ -1,4 +1,4 @@
-package com.hobbytogther.hobby;
+package com.hobbytogther.hooby;
 
 
 import com.hobbytogther.domain.Hobby;

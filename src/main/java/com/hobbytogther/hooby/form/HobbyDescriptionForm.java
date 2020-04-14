@@ -1,4 +1,4 @@
-package com.hobbytogther.hobby.form;
+package com.hobbytogther.hooby.form;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

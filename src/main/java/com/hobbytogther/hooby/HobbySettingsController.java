@@ -1,9 +1,9 @@
-package com.hobbytogther.hobby;
+package com.hobbytogther.hooby;
 
 import com.hobbytogther.account.CurrentAccount;
 import com.hobbytogther.domain.Account;
 import com.hobbytogther.domain.Hobby;
-import com.hobbytogther.hobby.form.HobbyDescriptionForm;
+import com.hobbytogther.hooby.form.HobbyDescriptionForm;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Controller;
@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.validation.Path;
 import javax.validation.Valid;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -40,21 +39,23 @@ public class HobbySettingsController {
 
     /** Description 저장 */
     @PostMapping("/description")
-    public String updateHobbyInfo(@CurrentAccount Account account, @PathVariable String path,
-                                  @Valid HobbyDescriptionForm hobbyDescriptionForm, Errors errors, Model model,
-                                  RedirectAttributes attributes) {
+    public String updateStudyInfo(@CurrentAccount Account account, @PathVariable String path,
+                                  @Valid HobbyDescriptionForm hobbyDescriptionForm, Errors errors,
+                                  Model model, RedirectAttributes attributes) {
+        Hobby hobby = hobbyService.getHobbyToUpdate(account, path);
 
-        Hobby hobby = hobbyService.getHobbyToUpdate(account, path); //persist statue
-        if(errors.hasErrors()) {
+        if (errors.hasErrors()) {
             model.addAttribute(account);
             model.addAttribute(hobby);
             return "hobby/settings/description";
         }
-        hobbyService.updateHobbyDescription(hobby,hobbyDescriptionForm);
+
+        hobbyService.updateHobbyDescription(hobby, hobbyDescriptionForm);
         attributes.addFlashAttribute("message", "hobby 소개를 수정했습니다.");
-        return "redirect:/hobby/" + getPath(path) + "/settings/hobby";
+        return "redirect:/hobby/" + getPath(path) + "/settings/description";
     }
-    public String getPath(String path) {
+
+    private String getPath(String path) {
         return URLEncoder.encode(path, StandardCharsets.UTF_8);
     }
 }

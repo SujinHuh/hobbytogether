@@ -1,8 +1,8 @@
-package com.hobbytogther.hobby;
+package com.hobbytogther.hooby;
 
 import com.hobbytogther.domain.Account;
 import com.hobbytogther.domain.Hobby;
-import com.hobbytogther.hobby.form.HobbyDescriptionForm;
+import com.hobbytogther.hooby.form.HobbyDescriptionForm;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.access.AccessDeniedException;

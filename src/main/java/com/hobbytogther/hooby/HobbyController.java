@@ -1,10 +1,10 @@
-package com.hobbytogther.hobby;
+package com.hobbytogther.hooby;
 
 import com.hobbytogther.account.CurrentAccount;
 import com.hobbytogther.domain.Account;
 import com.hobbytogther.domain.Hobby;
-import com.hobbytogther.hobby.form.HobbyForm;
-import com.hobbytogther.hobby.validator.HobbyFormValidator;
+import com.hobbytogther.hooby.form.HobbyForm;
+import com.hobbytogther.hooby.validator.HobbyFormValidator;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Controller;
@@ -53,10 +53,9 @@ public class HobbyController {
         return "redirect:/hobby/" + URLEncoder.encode(newHobby.getPath(), StandardCharsets.UTF_8);
     }
 
-
     /** Hobby 조회*/
     @GetMapping("/hobby/{path}")
-    public String viewHobby(@CurrentAccount Account account, @PathVariable String path, Model model) {
+    public String viewStudy(@CurrentAccount Account account, @PathVariable String path, Model model) {
         Hobby hobby = hobbyService.getHoby(path);
         model.addAttribute(account);
         model.addAttribute(hobby);
@@ -65,11 +64,12 @@ public class HobbyController {
 
     /** Hobby 구성원 조회 */
     @GetMapping("/hobby/{path}/members")
-    public String viewHobbyMembers(@CurrentAccount Account account, @PathVariable String path, Model model) {
+    public String viewStudyMembers(@CurrentAccount Account account, @PathVariable String path, Model model) {
         Hobby hobby = hobbyService.getHoby(path);
         model.addAttribute(account);
         model.addAttribute(hobby);
         return "hobby/members";
     }
+
 
 }
