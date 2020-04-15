@@ -55,6 +55,22 @@ public class HobbySettingsController {
         return "redirect:/hobby/" + getPath(path) + "/settings/description";
     }
 
+    @GetMapping("/banner")
+    public String studyImageForm(@CurrentAccount Account account, @PathVariable String path, Model model) {
+        Hobby hobby = hobbyService.getHobbyToUpdate(account, path);
+        model.addAttribute(account);
+        model.addAttribute(hobby);
+        return "study/settings/banner";
+    }
+
+    @PostMapping("/banner")
+    public String studyImageSubmit(@CurrentAccount Account account, @PathVariable String path,
+                                   String image, RedirectAttributes attributes) {
+        Hobby hobby = hobbyService.getHobbyToUpdate(account, path);
+        hobbyService.updateHobbyImage(hobby, image);
+        attributes.addFlashAttribute("message", "Hobby 이미지를 수정했습니다.");
+        return "redirect:/hobby/" + getPath(path) + "/settings/banner";
+    }
     private String getPath(String path) {
         return URLEncoder.encode(path, StandardCharsets.UTF_8);
     }
