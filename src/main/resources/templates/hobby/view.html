@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <div th:replace="fragements.html :: head"></div>
 
 <body class="bg-light">
@@ -14,11 +14,6 @@
 
     <div class="fragments.html :: footer"></div>
 </div>
-
-<script type="application/javascript">
-    $(function () {
-        $('[data-toggle="tooltip"]').tooltip()
-    })
-</script>
+<script th:replace="fragements.html :: tooltip"></script>
 </body>
 </html>
