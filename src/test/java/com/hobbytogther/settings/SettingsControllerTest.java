@@ -6,7 +6,7 @@ import com.hobbytogther.account.AccountRepository;
 import com.hobbytogther.account.AccountService;
 import com.hobbytogther.domain.Account;
 import com.hobbytogther.domain.Tag;
-import com.hobbytogther.settings.form.TagForm;
+import com.hobbytogther.tag.TagForm;
 import com.hobbytogther.tag.TagRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
