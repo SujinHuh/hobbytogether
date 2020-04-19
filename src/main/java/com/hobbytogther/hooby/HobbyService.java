@@ -25,13 +25,13 @@ public class HobbyService {
         return newHobby;
     }
 
-    public Hobby getHoby(String path) {
+    public Hobby getHobby(String path) {
         Hobby hobby = hobbyRepository.findByPath(path);
         checkIfExistingHobby(path,hobby);
         return hobby;
     }
     public Hobby getHobbyToUpdate(Account account, String path) {
-        Hobby hobby = this.getHoby(path);
+        Hobby hobby = this.getHobby(path);
         if (!account.isManagerOf(hobby)) {
             throw new AccessDeniedException("해당 기능을 사용할 수 없습니다.");
         }
@@ -83,6 +83,13 @@ public class HobbyService {
         return hobby;
     }
 
+    public Hobby getHobbyToUpdateStatus(Account account, String path) {
+        Hobby hobby = hobbyRepository.findHobbyWithManagersByPath(path);
+        checkIfExistingHobby(path, hobby);
+        checkIfManager(account, hobby);
+        return hobby;
+    }
+
     private void checkIfManager(Account account, Hobby hobby) {
         if (!account.isManagerOf(hobby)) {
             throw new AccessDeniedException("해당 기능을 사용할 수 없습니다.");
@@ -91,8 +98,22 @@ public class HobbyService {
 
     private void checkIfExistingHobby(String path, Hobby hobby) {
         if (hobby == null) {
-            throw new IllegalArgumentException(path + "에 해당하는 스터디가 없습니다.");
+            throw new IllegalArgumentException(path + "에 해당하는 hobby 없습니다.");
         }
     }
 
+    public void publish(Hobby hobby) {
+        hobby.publish();
+    }
+    public void close(Hobby hobby) {
+        hobby.close();
+    }
+
+    public void startRecruit(Hobby hobby) {
+        hobby.startRecruit();
+    }
+
+    public void stopRecruit(Hobby hobby) {
+        hobby.stopRecruit();
+    }
 }
