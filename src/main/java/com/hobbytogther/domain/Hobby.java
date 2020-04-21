@@ -16,6 +16,8 @@ import java.util.Set;
 
 @NamedEntityGraph(name = "Hobby.withManagers", attributeNodes = {
         @NamedAttributeNode("managers")})
+@NamedEntityGraph(name = "Hobby.withMembers", attributeNodes = {
+        @NamedAttributeNode("members")})
 @Entity
 @Getter
 @Setter
@@ -136,4 +138,11 @@ public class Hobby {
     public boolean isRemovable() {
         return !this.published; // TODO 모임을 공개시  삭제할 수 없다.
     }
+    public void addMember(Account account) {
+        this.getManagers().add(account);
+    }
+    public void removeMember(Account account) {
+        this.getManagers().remove(account);
+    }
+
 }

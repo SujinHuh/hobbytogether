@@ -29,7 +29,9 @@ public class HobbyService {
 
     public Hobby getHobby(String path) {
         Hobby hobby = hobbyRepository.findByPath(path);
-        checkIfExistingHobby(path,hobby);
+        if(hobby == null) {
+            throw new IllegalArgumentException(path + "에 해당하는 hpbby 없습니다.");
+        }
         return hobby;
     }
     public Hobby getHobbyToUpdate(Account account, String path) {
@@ -146,5 +148,13 @@ public class HobbyService {
             throw new IllegalArgumentException("Hobby를 삭제할 수 없습니다.");
         }
 
+    }
+
+    public void addMember(Hobby hobby, Account account) {
+        hobby.addMember(account);
+    }
+
+    public void removeMember(Hobby hobby, Account account) {
+        hobby.removeMember(account);
     }
 }
