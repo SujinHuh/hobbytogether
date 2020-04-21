@@ -117,20 +117,31 @@
             </div>
 
             <hr/>
-            <div class="row">
+            <div class="row" th:if="${hobby.isRemovable()}">
                 <h5 class="col-sm-12 text-danger">Hobby 삭제</h5>
                 <form class="col-sm-12" action="#" th:action="@{'/hobby/' + ${hobby.getPath()} + '/settings/hobby/remove'}" method="post" novalidate>
                     <div class="alert alert-danger" role="alert">
                         hobby를 삭제하면 hobby 관련 모든 기록을 삭제하며 복구할 수 없습니다. <br/>
                         <b>다음에 해당하는 hobby는 자동으로 삭제 됩니다.</b>
                         <ul>
-                            <li>만든지 1주일이 지난 비공개 스터디</li>
+                            <li>만든지 1주일이 지난 비공개 hobby</li>
                             <li>hobby 공개 이후, 한달 동안 모임을 만들지 않은 hobby</li>
                             <li>hobby 공개 이후, 모임을 만들지 않고 종료한 hobby</li>
                         </ul>
                     </div>
                     <div class="form-group">
                         <button class="btn btn-outline-danger" type="submit" aria-describedby="submitHelp">hobby 삭제</button>
+                    </div>
+                </form>
+            </div>
+            <div class="row" th:if="${!hobby.isRemovable()}">
+                <h5 class="col-sm-12 text-danger">스터디 삭제</h5>
+                <form class="col-sm-12" action="#" th:action="@{'/hobby/' + ${hobby.getPath()} + '/settings/hobby/remove'}" method="post" novalidate>
+                    <div class="alert alert-danger" role="alert">
+                        공개 중이고 모임을 했던 hobby는 삭제할 수 없습니다.
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-outline-danger" type="submit" aria-describedby="submitHelp" disabled>hobby 삭제</button>
                     </div>
                 </form>
             </div>

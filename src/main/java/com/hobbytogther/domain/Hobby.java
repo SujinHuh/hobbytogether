@@ -133,4 +133,7 @@ public class Hobby {
         return this.published && this.recruitingUpdatedDateTime == null || this.recruitingUpdatedDateTime.isBefore(LocalDateTime.now().minusHours(1));
     }
 
+    public boolean isRemovable() {
+        return !this.published; // TODO 모임을 공개시  삭제할 수 없다.
+    }
 }

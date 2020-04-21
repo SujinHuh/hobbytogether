@@ -294,4 +294,12 @@ public class HobbySettingsController {
     private String getPath(String path) {
         return URLEncoder.encode(path, StandardCharsets.UTF_8);
     }
+
+    /** Hobby Remove */
+    @PostMapping("/hobby/remove")
+    public String removeHobby(@CurrentAccount Account account,@PathVariable String path, Model model) {
+        Hobby hobby = hobbyService.getHobbyToUpdateStatus(account, path);
+        hobbyService.remove(hobby);
+        return "redirect:/";
+    }
 }
