@@ -36,12 +36,7 @@ public class HobbyController {
         webDataBinder.addValidators(hobbyFormValidator);
     }
 
-    @GetMapping("/hobby/{path}")
-    public String viewHobby(@CurrentAccount Account account, @PathVariable String path, Model model) {
-        model.addAttribute(account);
-        model.addAttribute(hobbyRepository.findByPath(path));
-        return "hobby/view";
-    }
+
 
     @GetMapping("/new-hobby")
     public String newHobbyForm(@CurrentAccount Account account, Model model) {
@@ -51,8 +46,9 @@ public class HobbyController {
     }
 
     @PostMapping("/new-hobby")
-    public String newHobbySubmit(@CurrentAccount Account account, @Valid HobbyForm hobbyForm, Errors errors) {
+    public String newHobbySubmit(@CurrentAccount Account account, @Valid HobbyForm hobbyForm, Errors errors ,Model model) {
         if (errors.hasErrors()) {
+            model.addAttribute(account);
             return "hobby/form";
         }
 
@@ -60,5 +56,18 @@ public class HobbyController {
         return "redirect:/hobby/" + URLEncoder.encode(newStudy.getPath(), StandardCharsets.UTF_8);
     }
 
+    @GetMapping("/hobby/{path}")
+    public String viewHobby(@CurrentAccount Account account, @PathVariable String path, Model model) {
+        model.addAttribute(account);
+        model.addAttribute(hobbyRepository.findByPath(path));
+        return "hobby/view";
+    }
+
+    @GetMapping("/hobby/{path}/members")
+    public String viewStudyMembers(@CurrentAccount Account account, @PathVariable String path, Model model) {
+        model.addAttribute(account);
+        model.addAttribute(hobbyRepository.findByPath(path));
+        return "hobby/members";
+    }
 
 }

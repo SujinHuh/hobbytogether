@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragements.html :: head"></head>
+<body class="bg-light">
+<div th:replace="fragements.html :: main-nav"></div>
+<div th:replace="fragements.html :: hobby-banner"></div>
+<div class="container">
+    <div th:replace="fragements.html :: hobby-info"></div>
+    <div th:replace="fragements.html :: hobby-menu(hobbyMenu='members')"></div>
+
+    <div th:replace="fragements.html :: member-list(members=${hobby.managers},isManager=${true})"></div>
+    <div th:replace="fragements.html :: member-list(members=${hobby.members},isManager=${false})"></div>
+
+    <div th:replace="fragements.html :: footer"></div>
+</div>
+<script type="application/javascript">
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+</script>
+</body>
+</html>
