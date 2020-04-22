@@ -56,7 +56,7 @@ public class HobbyController {
     /** Hobby 조회*/
     @GetMapping("/hobby/{path}")
     public String viewStudy(@CurrentAccount Account account, @PathVariable String path, Model model) {
-        Hobby hobby = hobbyService.getHobby(path);
+        Hobby hobby = hobbyService.getHoby(path);
         model.addAttribute(account);
         model.addAttribute(hobby);
         return "hobby/view";
@@ -65,7 +65,7 @@ public class HobbyController {
     /** Hobby 구성원 조회 */
     @GetMapping("/hobby/{path}/members")
     public String viewStudyMembers(@CurrentAccount Account account, @PathVariable String path, Model model) {
-        Hobby hobby = hobbyService.getHobby(path);
+        Hobby hobby = hobbyService.getHoby(path);
         model.addAttribute(account);
         model.addAttribute(hobby);
         return "hobby/members";
