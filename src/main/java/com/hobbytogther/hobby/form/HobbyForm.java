@@ -1,4 +1,4 @@
-package com.hobbytogther.hooby.form;
+package com.hobbytogther.hobby.form;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 

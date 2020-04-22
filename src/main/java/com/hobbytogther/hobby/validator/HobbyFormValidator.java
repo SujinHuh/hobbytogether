@@ -1,7 +1,7 @@
-package com.hobbytogther.hooby.validator;
+package com.hobbytogther.hobby.validator;
 
-import com.hobbytogther.hooby.HobbyRepository;
-import com.hobbytogther.hooby.form.HobbyForm;
+import com.hobbytogther.hobby.HobbyRepository;
+import com.hobbytogther.hobby.form.HobbyForm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;

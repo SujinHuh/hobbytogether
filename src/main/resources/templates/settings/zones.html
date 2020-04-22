@@ -6,7 +6,22 @@
 <div class="container">
     <div class="row mt-5 justify-content-center">
         <div class="col-2">
-            <div th:replace="fragements.html :: settings-menu(currentMenu='tags')"></div>
+            <!--            <div th:replace="fragments.html :: settings-menu(currentMenu='tags')"></div>-->
+            <div class="list-group">
+                <a class="list-group-item list-group-item-action" th:classappend="${currentMenu == 'profile'}? active"
+                   href="#" th:href="@{/settings/profile}">프로필</a>
+                <a class="list-group-item list-group-item-action" th:classappend="${currentMenu == 'password'}? active"
+                   href="#" th:href="@{/settings/password}">패스워드</a>
+                <a class="list-group-item list-group-item-action"
+                   th:classappend="${currentMenu == 'notifications'}? active" href="#"
+                   th:href="@{/settings/notifications}">알림</a>
+                <a class="list-group-item list-group-item-action" th:classappend="${currentMenu == 'tags'}? active"
+                   href="#" th:href="@{/settings/tags}">관심 주제</a>
+                <a class="list-group-item list-group-item-action" th:classappend="${currentMenu == 'zones'}? active"
+                   href="#" th:href="@{/settings/zones}">활동 지역</a>
+                <a class="list-group-item list-group-item-action list-group-item-danger"
+                   th:classappend="${currentMenu == 'account'}? active" href="#" th:href="@{/settings/account}">계정</a>
+            </div>
         </div>
         <div class="col-8">
             <div class="row">
@@ -27,7 +42,7 @@
     </div>
 </div>
 <script type="application/javascript" th:inline="javascript" th:fragment="ajax-csrf-header">
-    $(function () {
+    $(function() {
         var csrfToken = /*[[${_csrf.token}]]*/ null;
         var csrfHeader = /*[[${_csrf.headerName}]]*/ null;
         $(document).ajaxSend(function (e, xhr, options) {
@@ -67,7 +82,7 @@
         var tagify = new Tagify(tagInput, {
             enforceWhitelist: true,
             whitelist: JSON.parse(document.querySelector("#whitelist").textContent),
-            dropdown: {
+            dropdown : {
                 enabled: 1, // suggest tags after a single character input
             } // map tags
         });
