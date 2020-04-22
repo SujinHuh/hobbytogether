@@ -72,9 +72,6 @@ public class Hobby {
         this.managers.add(account);
     }
 
-    public void addMemeber(Account account) {
-        this.members.add(account);
-    }
     public boolean isJoinable(UserAccount userAccount) {
         Account account = userAccount.getAccount();
         return this.isPublished() && this.isRecruiting()

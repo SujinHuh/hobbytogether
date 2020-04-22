@@ -38,11 +38,161 @@
 </head>
 
 <body class="bg-light">
-<div th:replace="fragements.html :: main-nav"></div>
-<div th:replace="fragements.html :: hobby-banner"></div>
+<nav th:fragment="main-nav" class="navbar navbar-expand-sm navbar-dark bg-dark">
+    <a class="navbar-brand" href="/" th:href="@{/}">
+        <img src="/images/logo_sm.png" width="30" height="30">
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <!-- 검색 창 -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <form th:action="@{/search/hobby}" class="form-inline" method="get">
+                    <input class="form-control mr-sm-2" name="keyword" type="search" placeholder="나의 취미 찾기"
+                           aria-label="Search"/>
+                </form>
+            </li>
+        </ul>
+        <!-- 로그인 -->
+        <ul class="navbar-nav justify-content-end">
+            <li class="nav-item" sec:authorize="!isAuthenticated()">
+                <a class="nav-link" href="#" th:href="@{/login}">로그인</a>
+            </li>
+            <li class="nav-item" sec:authorize="!isAuthenticated()">
+                <a class="nav-link" href="#" th:href="@{/sign-up}">가입</a>
+            </li>
+            <li class="nav-item" sec:authorize="isAuthenticated()">
+                <a class="nav-link" href="#" th:href="@{/notification}">
+                    <!--font-awesome 벨 추가-->
+                    <i class="fa fa-bell-o" aria-hidden="true"></i>
+                </a>
+            </li>
+            <li class="nv-item" sec:authorize="isAuthenticated()">
+                <a class="nav-link btn btn-outline-primary" href="#" th:href="@{/new-hobby}">
+                    <!--font-awesome 더하기 추가-->
+                    <i class="fa fa-plus" aria-hidden="true"> </i> 취미공유 모임 개설 </a>
+            </li>
+            <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
+                   aria-haspopup="true" aria-expanded="false">
+                    <!-- jdenticon 이름에 따라 다른 아바타가 나옴 -->
+                    <svg th:if="${#strings.isEmpty(account?.profileImage)}"
+                         th:data-jdenticon-value="${#authentication.name}"
+                         width="24" height="24" class="rounded border bg-light"></svg>
+                    <img th:if="${!#strings.isEmpty(account?.profileImage)}" th:src="${account.profileImage}"
+                         width="24" height="24" class="rounded border"/>
+                </a>
+                <div class="dropdown-menu dropdown-menu-sm-right" aria-labelledby="userDropdown">
+                    <h6 class="dropdown-header">
+                        <span sec:authentication="name">Username</span>
+                    </h6>
+                    <a class="dropdown-item" th:href="@{'/profile/' + ${#authentication.name}}">프로필</a>
+                    <a class="dropdown-item">취미</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="#" th:href="@{'/settings/profile'}">설정</a>
+                    <form class="form-inline my-2 my-lg-0" action="#" th:action="@{/logout}" method="post">
+                        <button class="dropdown-item" type="submit">로그아웃</button>
+                    </form>
+                </div>
+            </li>
+        </ul>
+    </div>
+</nav>
+<div th:fragment="hobby-banner" th:if="${hobby.useBanner}" class="row" id="study-logo">
+    <img th:src="${hobby.image}"/>
+</div>
+
 <div class="container">
-        <div th:replace="fragements.html :: hobby-info"></div>
-        <div th:replace="fragements.html :: hobby-menu(hobbyMenu= 'info')"></div>
+
+    <div th:fragment="hobby-info">
+        <div class="row pt-4 text-left justify-content-center bg-light">
+            <div class="col-6">
+                <a href="#" class="text-decoration-none" th:href="@{'/hobby/' + ${hobby.path}}">
+                    <span class="h2" th:text="${hobby.title}">hobby 이름</span>
+                </a>
+            </div>
+            <div class="col-4 text-right justify-content-end">
+                <span th:if="${!hobby.published}"
+                      class="d-inline-block" tabindex="0" data-toggle="tooltip" data-placement="bottom"
+                      title="hobby 공개 준비중">
+                    <button class="btn btn-primary btn-sm" style="pointer-events: none;" type="button" disabled>DRAFT</button>
+                </span>
+                <span th:if="${hobby.closed}"
+                      class="d-inline-block" tabindex="0" data-toggle="tooltip" data-placement="bottom" title="hobby 종료함">
+                    <button class="btn btn-primary btn-sm" style="pointer-events: none;" type="button" disabled>CLOSED</button>
+                </span>
+                <span th:if="${!hobby.recruiting}"
+                      class="d-inline-block ml-1" tabindex="0" data-toggle="tooltip" data-placement="bottom" title="팀원 모집중 아님">
+                    <button class="btn btn-primary btn-sm" style="pointer-events: none;" type="button" disabled>OFF</button>
+                </span>
+                <span sec:authorize="isAuthenticated()" th:if="${hobby.isJoinable(#authentication.principal)}"
+                      class="btn-group" role="group" aria-label="Basic example">
+                    <a class="btn btn-primary" th:href="@{'/study/' + ${hobby.path} + '/join'}">
+                        hobby 가입
+                    </a>
+                    <a class="btn btn-outline-primary" th:href="@{'/hobby/' + ${hobby.path} + '/members'}"
+                       th:text="${hobby.members.size()}">1</a>
+                </span>
+                <span sec:authorize="isAuthenticated()"
+                      th:if="${!hobby.closed && hobby.isMember(#authentication.principal)}" class="btn-group" role="group">
+                    <a class="btn btn-outline-warning" th:href="@{'/hobby/' + ${hobby.path} + '/leave'}">
+                        취미모임 탈퇴
+                    </a>
+                    <a class="btn btn-outline-primary" th:href="@{'/hobby/' + ${hobby.path} + '/members'}"
+                       th:text="${hobby.members.size()}">1</a>
+                </span>
+                <span sec:authorize="isAuthenticated()"
+                      th:if="${hobby.published && !hobby.closed && hobby.isManager(#authentication.principal)}">
+                    <a class="btn btn-outline-primary" th:href="@{'/hobby/' + ${hobby.path} + '/new-event'}">
+                        <i class="fa fa-plus"></i> 모임 만들기
+                    </a>
+                </span>
+            </div>
+        </div>
+        <div class="row justify-content-center bg-light">
+            <div class="col-10">
+                <p class="lead" th:text="${hobby.shortDescription}"></p>
+            </div>
+        </div>
+        <div class="row justify-content-center bg-light">
+            <div class="col-10">
+                <p>
+                <span th:each="tag: ${hobby.tags}"
+                      class="font-weight-light text-monospace badge badge-pill badge-info mr-3">
+                    <a th:href="@{'/search/tag/' + ${tag.title}}" class="text-decoration-none text-white">
+                        <i class="fa fa-tag"></i> <span th:text="${tag.title}">Tag</span>
+                    </a>
+                </span>
+                    <span th:each="zone: ${hobby.zones}" class="font-weight-light text-monospace badge badge-primary mr-3">
+                    <a th:href="@{'/search/zone/' + ${zone.id}}" class="text-decoration-none text-white">
+                        <i class="fa fa-globe"></i> <span th:text="${zone.localNameOfCity}">City</span>
+                    </a>
+                </span>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div th:fragment="hobby-menu (hobbyMenu)" class="row px-3 justify-content-center bg-light">
+        <nav class="col-10 nav nav-tabs">
+            <a class="nav-item nav-link" href="#" th:classappend="${hobbyMenu == 'info'}? active" th:href="@{'/hobby/' + ${hobby.path}}">
+                <i class="fa fa-info-circle"></i> 소개
+            </a>
+            <a class="nav-item nav-link" href="#" th:classappend="${hobbyMenu == 'members'}? active" th:href="@{'/hobby/' + ${hobby.path} + '/members'}">
+                <i class="fa fa-user"></i> 구성원
+            </a>
+            <a class="nav-item nav-link" th:classappend="${hobbyMenu == 'events'}? active" href="#" th:href="@{'/hobby/' + ${hobby.path} + '/events'}">
+                <i class="fa fa-calendar"></i> 모임
+            </a>
+            <a sec:authorize="isAuthenticated()" th:if="${hobby.isManager(#authentication.principal)}"
+               class="nav-item nav-link" th:classappend="${hobbyMenu == 'settings'}? active" href="#" th:href="@{'/hobby/' + ${hobby.path} + '/settings/description'}">
+                <i class="fa fa-cog"></i> 설정
+            </a>
+        </nav>
+    </div>
+
     <div class="row px-3 justify-content-center">
         <div class="col-10 pt-3" th:utext="${hobby.fullDescription}"></div>
     </div>
