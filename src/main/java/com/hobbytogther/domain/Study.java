@@ -14,7 +14,7 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Hobby {
+public class Study {
 
     @Id
     @GeneratedValue

@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="/node_modules/font-awesome/css/font-awesome.min.css"/>
     <link rel="stylesheet" href="/node_modules/@yaireo/tagify/dist/tagify.css">
-    <link rel="stylesheet" href="/node_modules/summernote/dist/summernote-bs4.css">
     <script src="/node_modules/jdenticon/dist/jdenticon.min.js"></script>
     <script src="/node_modules/jquery/dist/jquery.min.js"></script>
     <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
@@ -58,7 +57,7 @@
                 </a>
             </li>
             <li class="nv-item" sec:authorize="isAuthenticated()">
-                <a class="nav-link btn btn-outline-primary" href="#" th:href="@{/new-hobby}">
+                <a class="nav-link btn btn-outline-primary" href="#" th:href="@{/notification}">
                     <!--font-awesome 더하기 추가-->
                     <i class="fa fa-plus" aria-hidden="true"> </i> 취미공유 모임 개설 </a>
             </li>
