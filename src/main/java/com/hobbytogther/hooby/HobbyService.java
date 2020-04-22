@@ -40,8 +40,4 @@ public class HobbyService {
     public void updateHobbyDescription(Hobby hobby, HobbyDescriptionForm hobbyDescriptionForm) {
         modelMapper.map(hobbyDescriptionForm, hobby);
     }
-
-    public void updateHobbyImage(Hobby hobby, String image) {
-        hobby.setImage(image);
-    }
 }
