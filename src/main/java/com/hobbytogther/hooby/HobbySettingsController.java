@@ -55,7 +55,6 @@ public class HobbySettingsController {
         return "redirect:/hobby/" + getPath(path) + "/settings/description";
     }
 
-    /** Banner */
     @GetMapping("/banner")
     public String studyImageForm(@CurrentAccount Account account, @PathVariable String path, Model model) {
         Hobby hobby = hobbyService.getHobbyToUpdate(account, path);
