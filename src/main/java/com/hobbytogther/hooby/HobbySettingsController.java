@@ -129,7 +129,7 @@ public class HobbySettingsController {
     @ResponseBody
     public ResponseEntity addTag(@CurrentAccount Account account, @PathVariable String path,
                                  @RequestBody TagForm tagForm) {
-        Hobby hobby = hobbyService.getHobbyToUpdateTag(account, path);
+        Hobby hobby = hobbyService.getHobbyToUpdate(account, path);
         Tag tag = tagService.findOrCreateNew(tagForm.getTagTitle());
         hobbyService.addTag(hobby, tag);
         return ResponseEntity.ok().build();
@@ -139,7 +139,7 @@ public class HobbySettingsController {
     @ResponseBody
     public ResponseEntity removeTag(@CurrentAccount Account account, @PathVariable String path,
                                     @RequestBody TagForm tagForm) {
-        Hobby hobby = hobbyService.getHobbyToUpdateTag(account, path);
+        Hobby hobby = hobbyService.getHobbyToUpdate(account, path);
         Tag tag = tagRepository.findByTitle(tagForm.getTagTitle());
         if (tag == null) {
             return ResponseEntity.badRequest().build();
@@ -169,7 +169,7 @@ public class HobbySettingsController {
     @ResponseBody
     public ResponseEntity addZone(@CurrentAccount Account account, @PathVariable String path,
                                   @RequestBody ZoneForm zoneForm) {
-        Hobby hobby = hobbyService.getHobbyToUpdateZone(account, path);
+        Hobby hobby = hobbyService.getHobbyToUpdate(account, path);
         Zone zone = zoneRepository.findByCityAndProvince(zoneForm.getCityName(), zoneForm.getProvinceName());
         if (zone == null) {
             return ResponseEntity.badRequest().build();
@@ -183,7 +183,7 @@ public class HobbySettingsController {
     @ResponseBody
     public ResponseEntity removeZone(@CurrentAccount Account account, @PathVariable String path,
                                      @RequestBody ZoneForm zoneForm) {
-        Hobby hobby = hobbyService.getHobbyToUpdateZone(account, path);
+        Hobby hobby = hobbyService.getHobbyToUpdate(account, path);
         Zone zone = zoneRepository.findByCityAndProvince(zoneForm.getCityName(), zoneForm.getProvinceName());
         if (zone == null) {
             return ResponseEntity.badRequest().build();

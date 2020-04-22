@@ -273,7 +273,6 @@
     </ul>
 </div>
 
-
 <div th:fragment="hobby-settings-menu (currentMenu)" class="list-group">
     <a class="list-group-item list-group-item-action" th:classappend="${currentMenu == 'description'}? active"
        href="#" th:href="@{'/hobby/' + ${hobby.path} + '/settings/description'}">소개</a>
