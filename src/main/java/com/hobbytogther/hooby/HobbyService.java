@@ -11,8 +11,6 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.hobbytogther.hooby.form.HobbyForm.VALID_PATH_PATTERN;
-
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -117,24 +115,5 @@ public class HobbyService {
 
     public void stopRecruit(Hobby hobby) {
         hobby.stopRecruit();
-    }
-
-    public boolean isValidPath(String newPath) {
-        if(!newPath.matches(VALID_PATH_PATTERN)) {
-            return false;
-        }
-        return !hobbyRepository.existsByPath(newPath);
-    }
-
-    public void updateHobbyPath(Hobby hobby, String newPath) {
-        hobby.setPath(newPath);
-    }
-
-    public boolean isValidTitle(String newTitle) {
-        return newTitle.length() <= 50;
-    }
-
-    public void updateHobbyTitle(Hobby hobby, String newTitle) {
-        hobby.setTitle(newTitle);
     }
 }

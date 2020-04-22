@@ -41,21 +41,17 @@ public class HobbySettingsController {
     private final TagRepository tagRepository;
     private final TagService tagService;
 
-    /**
-     * Description 수정
-     */
+    /** Description 수정 */
     @GetMapping("/description")
-    public String viewHobbySetting(@CurrentAccount Account account, @PathVariable String path, Model model) {
-        Hobby hobby = hobbyService.getHobbyToUpdate(account, path);
+    public String viewHobbySetting(@CurrentAccount Account account, @PathVariable String path , Model model) {
+        Hobby hobby = hobbyService.getHobbyToUpdate(account,path);
         model.addAttribute(account);
         model.addAttribute(hobby);
         model.addAttribute(modelMapper.map(hobby, HobbyDescriptionForm.class)); //form을 수정
         return "hobby/settings/description";
     }
 
-    /**
-     * Description 저장
-     */
+    /** Description 저장 */
     @PostMapping("/description")
     public String updateHobbyInfo(@CurrentAccount Account account, @PathVariable String path,
                                   @Valid HobbyDescriptionForm hobbyDescriptionForm, Errors errors,
@@ -73,9 +69,7 @@ public class HobbySettingsController {
         return "redirect:/hobby/" + getPath(path) + "/settings/description";
     }
 
-    /**
-     * Banner
-     */
+    /** Banner */
     @GetMapping("/banner")
     public String hobbyImageForm(@CurrentAccount Account account, @PathVariable String path, Model model) {
         Hobby hobby = hobbyService.getHobbyToUpdate(account, path);
@@ -106,24 +100,21 @@ public class HobbySettingsController {
         hobbyService.disableHobbyBanner(hobby);
         return "redirect:/hobby/" + getPath(path) + "/settings/banner";
     }
+     /** Tag */
+     @GetMapping("/tags")
+     public String studyTagsForm(@CurrentAccount Account account, @PathVariable String path, Model model)
+             throws JsonProcessingException {
+         Hobby hobby = hobbyService.getHobbyToUpdate(account, path); //필요한 정보만 가져오는 것
+         model.addAttribute(account);
+         model.addAttribute(hobby);
 
-    /**
-     * Tag
-     */
-    @GetMapping("/tags")
-    public String studyTagsForm(@CurrentAccount Account account, @PathVariable String path, Model model)
-            throws JsonProcessingException {
-        Hobby hobby = hobbyService.getHobbyToUpdate(account, path); //필요한 정보만 가져오는 것
-        model.addAttribute(account);
-        model.addAttribute(hobby);
-
-        model.addAttribute("tags", hobby.getTags().stream()
-                .map(Tag::getTitle).collect(Collectors.toList()));
-        List<String> allTagTitles = tagRepository.findAll().stream()
-                .map(Tag::getTitle).collect(Collectors.toList());
-        model.addAttribute("whitelist", objectMapper.writeValueAsString(allTagTitles));
-        return "hobby/settings/tags";
-    }
+         model.addAttribute("tags", hobby.getTags().stream()
+                 .map(Tag::getTitle).collect(Collectors.toList()));
+         List<String> allTagTitles = tagRepository.findAll().stream()
+                 .map(Tag::getTitle).collect(Collectors.toList());
+         model.addAttribute("whitelist", objectMapper.writeValueAsString(allTagTitles));
+         return "hobby/settings/tags";
+     }
 
     @PostMapping("/tags/add")
     @ResponseBody
@@ -149,9 +140,7 @@ public class HobbySettingsController {
         return ResponseEntity.ok().build();
     }
 
-    /**
-     * Zone
-     */
+    /** Zone */
     @GetMapping("/zones")
     public String hobbyZonesForm(@CurrentAccount Account account, @PathVariable String path, Model model)
             throws JsonProcessingException {
@@ -193,9 +182,7 @@ public class HobbySettingsController {
         return ResponseEntity.ok().build();
     }
 
-    /**
-     * Hobby
-     */
+    /** Hobby */
     @GetMapping("/hobby")
     public String studySettingForm(@CurrentAccount Account account, @PathVariable String path, Model model) {
         Hobby hobby = hobbyService.getHobbyToUpdate(account, path);
@@ -204,9 +191,7 @@ public class HobbySettingsController {
         return "hobby/settings/hobby";
     }
 
-    /**
-     * Hobby 공개
-     */
+    /** Hobby 공개 */
     @PostMapping("/hobby/publish")
     public String publishStudy(@CurrentAccount Account account, @PathVariable String path,
                                RedirectAttributes attributes) {
@@ -250,43 +235,6 @@ public class HobbySettingsController {
 
         hobbyService.stopRecruit(hobby);
         attributes.addFlashAttribute("message", "인원 모집을 종료합니다.");
-        return "redirect:/hobby/" + getPath(path) + "/settings/hobby";
-    }
-
-    /**
-     * Hobby Path
-     */
-    @PostMapping("/hobby/path")
-    // 단일 데이더는 @RequestParam으로 받을 수 있다.
-    public String updateHobbyPath(@CurrentAccount Account account, @PathVariable String path, @RequestParam String newPath,
-                                  Model model, RedirectAttributes attributes) {
-        Hobby hobby = hobbyService.getHobbyToUpdateStatus(account, path);
-        if (!hobbyService.isValidPath(newPath)) {
-            model.addAttribute(account);
-            model.addAttribute(hobby);
-            model.addAttribute("hobbyPathError", "해당 hobby는 사용할 수 없습니다. 다른 값을 입력해주세요;");
-            return "hobby/settings/hobby";
-        }
-        hobbyService.updateHobbyPath(hobby, newPath);
-        attributes.addFlashAttribute("message", "Hobby의 경로를 수정했습니다.");
-        return "redirect:/hobby/" + getPath(newPath) + "/settings/hobby";
-    }
-
-    /**
-     * Hobby Title
-     */
-    @PostMapping("hobby/title")
-    public String updateHobbyTitle(@CurrentAccount Account account, @PathVariable String path, String newTitle,
-                                   Model model, RedirectAttributes attributes) {
-        Hobby hobby = hobbyService.getHobbyToUpdateStatus(account, path);
-        if (!hobbyService.isValidTitle(newTitle)) {
-            model.addAttribute(account);
-            model.addAttribute(hobby);
-            model.addAttribute("hobbyTitleError", "Hobby 이름을 다시 입력해 주새요");
-            return "hobby/settings/hobby";
-        }
-        hobbyService.updateHobbyTitle(hobby, newTitle);
-        attributes.addFlashAttribute("message","hobby 이름을 수정하였습니다.");
         return "redirect:/hobby/" + getPath(path) + "/settings/hobby";
     }
 
