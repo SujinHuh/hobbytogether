@@ -1,18 +1,11 @@
 package com.hobbytogther.domain;
 
-import com.hobbytogther.account.UserAccount;
 import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
-
-@NamedEntityGraph(name = "Study.withAll", attributeNodes = {
-        @NamedAttributeNode("tags"),
-        @NamedAttributeNode("zones"),
-        @NamedAttributeNode("managers"),
-        @NamedAttributeNode("members")})
 
 @Entity
 @Getter
@@ -71,20 +64,4 @@ public class Hobby {
     public void addManager(Account account) {
         this.managers.add(account);
     }
-
-    public boolean isJoinable(UserAccount userAccount) {
-        Account account = userAccount.getAccount();
-        return this.isPublished() && this.isRecruiting()
-                && !this.members.contains(account) && !this.managers.contains(account);
-
-    }
-
-    public boolean isMember(UserAccount userAccount) {
-        return this.members.contains(userAccount.getAccount());
-    }
-
-    public boolean isManager(UserAccount userAccount) {
-        return this.managers.contains(userAccount.getAccount());
-    }
-
 }
