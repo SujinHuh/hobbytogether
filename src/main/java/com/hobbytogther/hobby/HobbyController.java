@@ -14,6 +14,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
@@ -28,11 +29,20 @@ public class HobbyController {
     private final HobbyService hobbyService;
     private final ModelMapper modelMapper;
     private final HobbyFormValidator hobbyFormValidator;
+    private final HobbyRepository hobbyRepository;
 
     @InitBinder("hobbyForm")
     public void studyFormInitBinder(WebDataBinder webDataBinder) {
         webDataBinder.addValidators(hobbyFormValidator);
     }
+
+    @GetMapping("/hobby/{path}")
+    public String viewHobby(@CurrentAccount Account account, @PathVariable String path, Model model) {
+        model.addAttribute(account);
+        model.addAttribute(hobbyRepository.findByPath(path));
+        return "hobby/view";
+    }
+
     @GetMapping("/new-hobby")
     public String newHobbyForm(@CurrentAccount Account account, Model model) {
         model.addAttribute(account);
@@ -49,5 +59,6 @@ public class HobbyController {
         Hobby newStudy = hobbyService.createNewHobby(modelMapper.map(hobbyForm, Hobby.class), account);
         return "redirect:/hobby/" + URLEncoder.encode(newStudy.getPath(), StandardCharsets.UTF_8);
     }
+
 
 }

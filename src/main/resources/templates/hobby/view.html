@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragements.html :: head"></head>
+<body class="bg-light">
+<div th:replace="fragements.html :: main-nav"></div>
+<div th:replace="fragements.html :: hobby-banner"></div>
+<div class="container">
+    <div th:replace="fragements.html :: hobby-info"></div>
+    <div th:replace="fragements.html :: hobby-menu(hobbyMenu='info')"></div>
+
+    <div class="row px-3 justify-content-center">
+        <div class="col-10 pt-3" th:utext="${hobby.fullDescription}"></div>
+    </div>
+
+    <div th:replace="fragements.html :: footer"></div>
+</div>
+<script type="application/javascript">
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+</script>
+</body>
+</html>
