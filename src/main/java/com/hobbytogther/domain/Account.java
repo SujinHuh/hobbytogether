@@ -88,7 +88,4 @@ public class Account {
     public boolean canSendConfirmEmail() {
         return this.emailCheckTokenGeneratedAt.isBefore(LocalDateTime.now().minusHours(1));
     }
-    public boolean isManagerOf(Hobby hobby) {
-        return hobby.getManagers().contains(this);
-    }
 }

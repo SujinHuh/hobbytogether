@@ -7,6 +7,8 @@ import com.hobbytogther.hobby.form.HobbyForm;
 import com.hobbytogther.hobby.validator.HobbyFormValidator;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.propertyeditors.URLEditor;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -57,18 +59,16 @@ public class HobbyController {
     /** Hobby 조회*/
     @GetMapping("/hobby/{path}")
     public String viewHobby(@CurrentAccount Account account, @PathVariable String path, Model model) {
-        Hobby hobby = hobbyService.getHoby(path);
         model.addAttribute(account);
-        model.addAttribute(hobby);
+        model.addAttribute(hobbyRepository.findByPath(path));
         return "hobby/view";
     }
 
     /** Hobby 구성원 조회 */
     @GetMapping("/hobby/{path}/members")
     public String viewHobbyMembers(@CurrentAccount Account account, @PathVariable String path, Model model) {
-        Hobby hobby = hobbyService.getHoby(path);
         model.addAttribute(account);
-        model.addAttribute(hobby);
+        model.addAttribute(hobbyRepository.findByPath(path));
         return "hobby/members";
     }
 
