@@ -8,16 +8,23 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
-@NamedEntityGraph(name = "Hobby.withAll", attributeNodes = {
+@NamedEntityGraph(name = "Hobby.withAllRelations", attributeNodes = {
         @NamedAttributeNode("tags"),
         @NamedAttributeNode("zones"),
         @NamedAttributeNode("managers"),
         @NamedAttributeNode("members")})
+@NamedEntityGraph(name = "Hobby.withTagsAndManagers", attributeNodes = {
+        @NamedAttributeNode("tags"),
+        @NamedAttributeNode("managers")})
 
+@NamedEntityGraph(name = "Hobby.withZonesAndManagers", attributeNodes = {
+        @NamedAttributeNode("zones"),
+        @NamedAttributeNode("managers")})
 @NamedEntityGraph(name = "Hobby.withManagers", attributeNodes = {
         @NamedAttributeNode("managers")})
 @NamedEntityGraph(name = "Hobby.withMembers", attributeNodes = {
         @NamedAttributeNode("members")})
+
 @Entity
 @Getter
 @Setter

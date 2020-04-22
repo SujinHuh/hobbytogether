@@ -55,19 +55,21 @@ public class HobbyController {
 
     /** Hobby 조회*/
     @GetMapping("/hobby/{path}")
-    public String viewStudy(@CurrentAccount Account account, @PathVariable String path, Model model) {
+    public String viewHobby(@CurrentAccount Account account, @PathVariable String path, Model model) {
         Hobby hobby = hobbyService.getHobby(path);
         model.addAttribute(account);
-        model.addAttribute(hobby);
+        model.addAttribute(hobbyRepository.findByPath(path));
         return "hobby/view";
     }
 
     /** Hobby 구성원 조회 */
     @GetMapping("/hobby/{path}/members")
-    public String viewStudyMembers(@CurrentAccount Account account, @PathVariable String path, Model model) {
+    public String viewHobbyMembers(@CurrentAccount Account account, @PathVariable String path, Model model) {
         Hobby hobby = hobbyService.getHobby(path);
         model.addAttribute(account);
         model.addAttribute(hobby);
+//        model.addAttribute(account);
+//        model.addAttribute(hobbyRepository.findByPath(path));
         return "hobby/members";
     }
 
