@@ -1,4 +1,4 @@
-package com.hobbytogther.hobby;
+package com.hobbytogther.hobby.validator;
 
 import com.hobbytogther.domain.Hobby;
 import org.springframework.data.jpa.repository.EntityGraph;

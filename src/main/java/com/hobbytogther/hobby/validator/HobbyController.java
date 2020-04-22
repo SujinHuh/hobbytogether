@@ -1,10 +1,9 @@
-package com.hobbytogther.hobby;
+package com.hobbytogther.hobby.validator;
 
 import com.hobbytogther.account.CurrentAccount;
 import com.hobbytogther.domain.Account;
 import com.hobbytogther.domain.Hobby;
 import com.hobbytogther.hobby.form.HobbyForm;
-import com.hobbytogther.hobby.validator.HobbyFormValidator;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Controller;
@@ -58,15 +57,17 @@ public class HobbyController {
 
     @GetMapping("/hobby/{path}")
     public String viewHobby(@CurrentAccount Account account, @PathVariable String path, Model model) {
+       Hobby hobby = hobbyService.getHobby(path);
         model.addAttribute(account);
-        model.addAttribute(hobbyRepository.findByPath(path));
+        model.addAttribute(hobby);
         return "hobby/view";
     }
 
     @GetMapping("/hobby/{path}/members")
     public String viewStudyMembers(@CurrentAccount Account account, @PathVariable String path, Model model) {
+        Hobby hobby = hobbyService.getHobby(path);
         model.addAttribute(account);
-        model.addAttribute(hobbyRepository.findByPath(path));
+        model.addAttribute(hobby);
         return "hobby/members";
     }
 
