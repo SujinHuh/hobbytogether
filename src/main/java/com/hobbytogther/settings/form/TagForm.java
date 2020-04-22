@@ -1,4 +1,4 @@
-package com.hobbytogther.tag;
+package com.hobbytogther.settings.form;
 
 import lombok.Data;
 

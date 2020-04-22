@@ -11,10 +11,7 @@ import com.hobbytogther.settings.form.*;
 import com.hobbytogther.settings.validator.NicknameValidator;
 import com.hobbytogther.settings.validator.Notifications;
 import com.hobbytogther.settings.validator.PasswordFormValidator;
-import com.hobbytogther.tag.TagForm;
 import com.hobbytogther.tag.TagRepository;
-import com.hobbytogther.tag.TagService;
-import com.hobbytogther.zone.ZoneForm;
 import com.hobbytogther.zone.ZoneRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -53,7 +50,6 @@ public class SettingsController {
     private final TagRepository tagRepository;
     private final ObjectMapper objectMapper;
     private final ZoneRepository zoneRepository;
-    private final TagService tagService;
 
     @InitBinder("passwordForm")
     public void initBinder(WebDataBinder webDataBinder) {
@@ -171,7 +167,12 @@ public class SettingsController {
     @PostMapping(TAGS + "/add")         //요청이 본문에 들어옴 @RequestBody - TagForm을 받아서
     @ResponseBody /** AJAX 요청 응답 자체가 ResponseBody 되어야 한다. 반환 값은 ResponseEntity */
     public ResponseEntity addTag(@CurrentAccount Account account, @RequestBody TagForm tagForm) {
-        Tag tag = tagService.findOrCreateNew(tagForm.getTagTitle());
+        String title = tagForm.getTagTitle();
+         Tag tag = tagRepository.findByTitle(title);
+
+         if(tag == null) {
+             tag = tagRepository.save(Tag.builder().title(tagForm.getTagTitle()).build());
+         }
          accountService.addTag(account,tag);
         return ResponseEntity.ok().build();
         /**        /**Optional
