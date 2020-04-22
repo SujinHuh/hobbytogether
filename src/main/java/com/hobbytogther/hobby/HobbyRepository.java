@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 public interface HobbyRepository extends JpaRepository<Hobby,Long> {
     boolean existsByPath(String path);
 
-    @EntityGraph(value = "Hobby.withAll", type = EntityGraph.EntityGraphType.LOAD)
+    @EntityGraph(value = "Study.withAll", type = EntityGraph.EntityGraphType.LOAD)
     Hobby findByPath(String path);
 
 }

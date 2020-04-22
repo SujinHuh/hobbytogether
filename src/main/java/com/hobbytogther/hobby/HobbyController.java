@@ -55,7 +55,9 @@ public class HobbyController {
     }
 
 
-    /** Hobby 조회*/
+    /**
+     * Hobby 조회
+     */
     @GetMapping("/hobby/{path}")
     public String viewHobby(@CurrentAccount Account account, @PathVariable String path, Model model) {
         model.addAttribute(account);
