@@ -61,7 +61,4 @@ public class Hobby {
 
     private boolean useBanner;
 
-    public void addManager(Account account) {
-        this.managers.add(account);
-    }
 }
