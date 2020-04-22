@@ -57,34 +57,20 @@ public class HobbySettingsController {
 
     /** Banner */
     @GetMapping("/banner")
-    public String hobbyImageForm(@CurrentAccount Account account, @PathVariable String path, Model model) {
+    public String studyImageForm(@CurrentAccount Account account, @PathVariable String path, Model model) {
         Hobby hobby = hobbyService.getHobbyToUpdate(account, path);
         model.addAttribute(account);
         model.addAttribute(hobby);
-        return "hobby/settings/banner";
+        return "study/settings/banner";
     }
 
     @PostMapping("/banner")
-    public String hobbyImageSubmit(@CurrentAccount Account account, @PathVariable String path,
+    public String studyImageSubmit(@CurrentAccount Account account, @PathVariable String path,
                                    String image, RedirectAttributes attributes) {
         Hobby hobby = hobbyService.getHobbyToUpdate(account, path);
         hobbyService.updateHobbyImage(hobby, image);
         attributes.addFlashAttribute("message", "Hobby 이미지를 수정했습니다.");
         return "redirect:/hobby/" + getPath(path) + "/settings/banner";
-    }
-
-    @PostMapping("/banner/enable")
-    public String enableHobbyBanner(@CurrentAccount Account account, @PathVariable String path) {
-        Hobby hobby = hobbyService.getHobbyToUpdate(account, path);
-        hobbyService.enableHobbyBanner(hobby);
-        return "redirect:/hobby/" + getPath(path) + "/settings/banner";
-    }
-
-    @PostMapping("/banner/disable")
-    public String disableStudyBanner(@CurrentAccount Account account, @PathVariable String path) {
-        Hobby hobby = hobbyService.getHobbyToUpdate(account, path);
-        hobbyService.disableHobbyBanner(hobby);
-        return "redirect:/study/" + getPath(path) + "/settings/banner";
     }
     private String getPath(String path) {
         return URLEncoder.encode(path, StandardCharsets.UTF_8);

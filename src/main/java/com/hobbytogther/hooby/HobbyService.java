@@ -44,12 +44,4 @@ public class HobbyService {
     public void updateHobbyImage(Hobby hobby, String image) {
         hobby.setImage(image);
     }
-
-    public void enableHobbyBanner(Hobby hobby) {
-        hobby.setUseBanner(true);
-    }
-
-    public void disableHobbyBanner(Hobby hobby) {
-        hobby.setUseBanner(false);
-    }
 }
