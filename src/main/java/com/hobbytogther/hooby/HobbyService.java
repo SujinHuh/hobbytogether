@@ -24,11 +24,11 @@ public class HobbyService {
     public Hobby createNewHobby(Hobby hobby, Account account) {
         Hobby newHobby = hobbyRepository.save(hobby);
         newHobby.addManager(account);
-        return hobby;
+        return newHobby;
     }
 
     public Hobby getHobby(String path) {
-        Hobby hobby = this.hobbyRepository.findByPath(path);
+        Hobby hobby = hobbyRepository.findByPath(path);
         if(hobby == null) {
             throw new IllegalArgumentException(path + "에 해당하는 hpbby 없습니다.");
         }
@@ -37,7 +37,7 @@ public class HobbyService {
     public Hobby getHobbyToUpdate(Account account, String path) {
         Hobby hobby = this.getHobby(path);
         if (!account.isManagerOf(hobby)) {
-            throw new AccessDeniedException("해당 기능을 사용할 수 없습니다.");// bad request
+            throw new AccessDeniedException("해당 기능을 사용할 수 없습니다.");
         }
         return hobby;
     }
