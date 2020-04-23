@@ -131,6 +131,10 @@
                 const reader = new FileReader();
                 reader.onload = e => {
                     if (e.target.result) {
+                        if (!e.target.result.startsWith("data:image")) {
+                            alert("이미지 파일을 선택하세요.");
+                            return;
+                        }
                         let img = document.createElement("img");
                         img.id = 'new-profile';
                         img.src = e.target.result;
@@ -168,7 +172,7 @@
             let newImage = document.createElement("img");
             newImage.id = "cropped-new-profile-image";
             newImage.src = dataUrl;
-            newImage.width = 125;
+            newImage.width = 100;
             $resultImage.html(newImage);
             $resultImage.show();
             $confirmBtn.show();

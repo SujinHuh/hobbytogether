@@ -45,4 +45,16 @@ public class HobbyService {
     public void updateHobbyDescription(Hobby hobby, HobbyDescriptionForm hobbyDescriptionForm) {
         modelMapper.map(hobbyDescriptionForm, hobby);
     }
+
+    public void updateHobbyImage(Hobby hobby, String image) {
+        hobby.setImage(image);
+    }
+
+    public void enableHobbyBanner(Hobby hobby) {
+        hobby.setUseBanner(true);
+    }
+
+    public void disableHobbyBanner(Hobby hobby) {
+        hobby.setUseBanner(false);
+    }
 }

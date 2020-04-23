@@ -79,4 +79,8 @@ public class Hobby {
     public boolean isManager(UserAccount userAccount) {
         return this.managers.contains(userAccount.getAccount());
     }
+
+    public String getImage() {
+        return image != null ? image : "/images/default_banner.png";
+    }
 }
