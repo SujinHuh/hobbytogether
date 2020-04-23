@@ -7,13 +7,19 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
-
+/** 필요 쿼리만 */
 @NamedEntityGraph(name = "Hobby.withAllRelations", attributeNodes = {
         @NamedAttributeNode("tags"),
         @NamedAttributeNode("zones"),
         @NamedAttributeNode("managers"),
         @NamedAttributeNode("members")})
 
+@NamedEntityGraph(name = "Hobby.withTagsAndManagers", attributeNodes = {
+        @NamedAttributeNode("tags"),
+        @NamedAttributeNode("managers")})
+@NamedEntityGraph(name = "Hobby.withZonesAndManagers", attributeNodes = {
+        @NamedAttributeNode("zones"),
+        @NamedAttributeNode("managers")})
 @Entity
 @Getter @Setter @EqualsAndHashCode(of = "id")
 @Builder @AllArgsConstructor @NoArgsConstructor

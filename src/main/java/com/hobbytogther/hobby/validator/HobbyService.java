@@ -2,8 +2,9 @@ package com.hobbytogther.hobby.validator;
 
 import com.hobbytogther.domain.Account;
 import com.hobbytogther.domain.Hobby;
+import com.hobbytogther.domain.Tag;
+import com.hobbytogther.domain.Zone;
 import com.hobbytogther.hobby.form.HobbyDescriptionForm;
-import com.hobbytogther.hobby.validator.HobbyRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.access.AccessDeniedException;
@@ -16,28 +17,24 @@ import javax.transaction.Transactional;
 @RequiredArgsConstructor
 public class HobbyService {
 
-    private final HobbyRepository repository;
+    private final HobbyRepository hobbyRepository;
     private final ModelMapper modelMapper;
 
     public Hobby createNewHobby(Hobby hobby, Account account) {
-        Hobby newHobby = repository.save(hobby);
+        Hobby newHobby = hobbyRepository.save(hobby);
         newHobby.addManager(account);
         return newHobby;
     }
     public Hobby getHobbyToUpdate(Account account, String path) {
         Hobby hobby = this.getHobby(path);
-        if (!account.isManagerOf(hobby)) {
-            throw new AccessDeniedException("해당 기능을 사용할 수 없습니다.");
-        }
+        checkIfManager(account, hobby);
 
         return hobby;
     }
 
     public Hobby getHobby(String path) {
-        Hobby hobby = this.repository.findByPath(path);
-        if (hobby == null) {
-            throw new IllegalArgumentException(path + "에 해당하는 스터디가 없습니다.");
-        }
+        Hobby hobby = this.hobbyRepository.findByPath(path);
+        checkIfExistingHobby(path, hobby);
 
         return hobby;
     }
@@ -56,5 +53,46 @@ public class HobbyService {
 
     public void disableHobbyBanner(Hobby hobby) {
         hobby.setUseBanner(false);
+    }
+    public void addTag(Hobby hobby, Tag tag) {
+        hobby.getTags().add(tag);
+    }
+
+    public void removeTag(Hobby hobby, Tag tag) {
+        hobby.getTags().remove(tag);
+    }
+
+    public void addZone(Hobby hobby, Zone zone) {
+        hobby.getZones().add(zone);
+    }
+
+    public void removeZone(Hobby hobby, Zone zone) {
+        hobby.getZones().remove(zone);
+    }
+
+    public Hobby getHobbyToUpdateTag(Account account, String path) {
+        Hobby hobby = hobbyRepository.findHobbyWithTagsByPath(path);
+        checkIfExistingHobby(path, hobby);
+        checkIfManager(account, hobby);
+        return hobby;
+    }
+
+    public Hobby getHobbyToUpdateZone(Account account, String path) {
+        Hobby hobby = hobbyRepository.findHobbyWithZonesByPath(path);
+        checkIfExistingHobby(path, hobby);
+        checkIfManager(account, hobby);
+        return hobby;
+    }
+
+    private void checkIfManager(Account account, Hobby hobby) {
+        if (!account.isManagerOf(hobby)) {
+            throw new AccessDeniedException("해당 기능을 사용할 수 없습니다.");
+        }
+    }
+
+    private void checkIfExistingHobby(String path, Hobby hobby) {
+        if (hobby == null) {
+            throw new IllegalArgumentException(path + "에 해당하는 스터디가 없습니다.");
+        }
     }
 }
