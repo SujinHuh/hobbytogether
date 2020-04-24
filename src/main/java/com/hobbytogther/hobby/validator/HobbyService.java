@@ -11,6 +11,9 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import javax.xml.validation.Validator;
+
+import static com.hobbytogther.hobby.form.HobbyForm.VALID_PATH;
 
 @Service
 @Transactional
@@ -114,5 +117,16 @@ public class HobbyService {
 
     public void stopRecruit(Hobby study) {
         study.stopRecruit();
+    }
+
+    public void updateHobbyPath(Hobby hobby, String newPath) {
+        hobby.setPath(newPath);
+    }
+
+    public boolean isValidPath(String newPath) {
+        if(!newPath.matches(VALID_PATH)){
+            return false;
+        }
+        return !hobbyRepository.existsByPath(newPath);
     }
 }

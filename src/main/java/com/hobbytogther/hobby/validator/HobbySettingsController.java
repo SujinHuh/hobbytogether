@@ -237,4 +237,26 @@ public class HobbySettingsController {
         attributes.addFlashAttribute("message", "인원 모집을 종료합니다.");
         return "redirect:/hobby/" + getPath(path) + "/settings/hobby";
     }
+
+    /** Hobby Path*/
+    @PostMapping("/hobby/path")
+    public String updateHobbyPath(@CurrentAccount Account account, @PathVariable String path, Model model,
+                                  String newPath, RedirectAttributes attributes) {
+
+        Hobby hobby = hobbyService.getHobbyToUpdateStatus(account, path);
+        if(!hobbyService.isValidPath(newPath)){
+            model.addAttribute(account);
+            model.addAttribute(hobby);
+            model.addAttribute("hobbyPathError", " 해당 경로는 사용이 불가 합니다. 다른 값을 입력해 주시기바랍니다. ");
+
+            return "hobby/settings/hobby";
+        }
+
+        hobbyService.updateHobbyPath(hobby,newPath);
+        attributes.addFlashAttribute("message", "Hobby의 경로를 수정했습니다.");
+        return "redirect:/hobby/" + getPath(newPath) + "/settings/hobby";
+
+    }
+
+
 }
