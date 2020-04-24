@@ -182,4 +182,59 @@ public class HobbySettingsController {
         hobbyService.removeZone(hobby, zone);
         return ResponseEntity.ok().build();
     }
+
+    /** Hobby */
+    @GetMapping("/hobby")
+    public String hobbySettingForm(@CurrentAccount Account account, @PathVariable String path, Model model) {
+        Hobby hobby = hobbyService.getHobbyToUpdate(account, path);
+        model.addAttribute(account);
+        model.addAttribute(hobby);
+        return "hobby/settings/hobby";
+    }
+
+    @PostMapping("/hobby/publish")
+    public String publishHobby(@CurrentAccount Account account, @PathVariable String path,
+                               RedirectAttributes attributes) {
+        Hobby hobby = hobbyService.getHobbyToUpdateStatus(account, path);
+        hobbyService.publish(hobby);
+        attributes.addFlashAttribute("message", "hobby를 공개했습니다.");
+        return "redirect:/hobby/" + getPath(path) + "/settings/hobby";
+    }
+
+    @PostMapping("/hobby/close")
+    public String closeHobby(@CurrentAccount Account account, @PathVariable String path,
+                             RedirectAttributes attributes) {
+        Hobby hobby = hobbyService.getHobbyToUpdateStatus(account, path);
+        hobbyService.close(hobby);
+        attributes.addFlashAttribute("message", "hobby를 종료했습니다.");
+        return "redirect:/hobby/" + getPath(path) + "/settings/hobby";
+    }
+
+    @PostMapping("/recruit/start")
+    public String startRecruit(@CurrentAccount Account account, @PathVariable String path, Model model,
+                               RedirectAttributes attributes) {
+        Hobby hobby = hobbyService.getHobbyToUpdateStatus(account, path);
+        if (!hobby.canUpdateRecruiting()) {
+            attributes.addFlashAttribute("message", "1시간 안에 인원 모집 설정을 여러번 변경할 수 없습니다.");
+            return "redirect:/hobby/" + getPath(path) + "/settings/hobby";
+        }
+
+        hobbyService.startRecruit(hobby);
+        attributes.addFlashAttribute("message", "인원 모집을 시작합니다.");
+        return "redirect:/hobby/" + getPath(path) + "/settings/hobby";
+    }
+
+    @PostMapping("/recruit/stop")
+    public String stopRecruit(@CurrentAccount Account account, @PathVariable String path, Model model,
+                              RedirectAttributes attributes) {
+        Hobby hobby = hobbyService.getHobbyToUpdate(account, path);
+        if (!hobby.canUpdateRecruiting()) {
+            attributes.addFlashAttribute("message", "1시간 안에 인원 모집 설정을 여러번 변경할 수 없습니다.");
+            return "redirect:/hobby/" + getPath(path) + "/settings/hobby";
+        }
+
+        hobbyService.stopRecruit(hobby);
+        attributes.addFlashAttribute("message", "인원 모집을 종료합니다.");
+        return "redirect:/hobby/" + getPath(path) + "/settings/hobby";
+    }
 }

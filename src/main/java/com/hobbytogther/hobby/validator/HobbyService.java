@@ -83,7 +83,12 @@ public class HobbyService {
         checkIfManager(account, hobby);
         return hobby;
     }
-
+    public Hobby getHobbyToUpdateStatus(Account account, String path) {
+        Hobby hobby = hobbyRepository.findHobbyWithManagersByPath(path);
+        checkIfExistingHobby(path, hobby);
+        checkIfManager(account, hobby);
+        return hobby;
+    }
     private void checkIfManager(Account account, Hobby hobby) {
         if (!account.isManagerOf(hobby)) {
             throw new AccessDeniedException("해당 기능을 사용할 수 없습니다.");
@@ -94,5 +99,20 @@ public class HobbyService {
         if (hobby == null) {
             throw new IllegalArgumentException(path + "에 해당하는 스터디가 없습니다.");
         }
+    }
+    public void publish(Hobby study) {
+        study.publish();
+    }
+
+    public void close(Hobby study) {
+        study.close();
+    }
+
+    public void startRecruit(Hobby study) {
+        study.startRecruit();
+    }
+
+    public void stopRecruit(Hobby study) {
+        study.stopRecruit();
     }
 }
