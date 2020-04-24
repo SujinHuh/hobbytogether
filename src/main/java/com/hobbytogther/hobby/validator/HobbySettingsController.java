@@ -238,7 +238,7 @@ public class HobbySettingsController {
         return "redirect:/hobby/" + getPath(path) + "/settings/hobby";
     }
 
-    /** Hobby Path*/
+    /** Hobby Path */
     @PostMapping("/hobby/path")
     public String updateHobbyPath(@CurrentAccount Account account, @PathVariable String path, Model model,
                                   String newPath, RedirectAttributes attributes) {
@@ -258,5 +258,22 @@ public class HobbySettingsController {
 
     }
 
+
+    /** Hobby Title */
+    @PostMapping("/hobby/title")
+    public String updateHobbyTitle(@CurrentAccount Account account, @PathVariable String path, String newTitle,
+                                   Model model, RedirectAttributes attributes) {
+        Hobby hobby = hobbyService.getHobbyToUpdateStatus(account, path);
+        if (!hobbyService.isValidTitle(newTitle)) {
+            model.addAttribute(account);
+            model.addAttribute(hobby);
+            model.addAttribute("hobbyTitleError", "Hobby 이름을 다시 입력하세요.");
+            return "hobby/settings/hobby";
+        }
+
+        hobbyService.updateHobbyTitle(hobby, newTitle);
+        attributes.addFlashAttribute("message", "Hobby 이름을 수정했습니다.");
+        return "redirect:/hobby/" + getPath(path) + "/settings/hobby";
+    }
 
 }

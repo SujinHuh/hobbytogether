@@ -129,4 +129,12 @@ public class HobbyService {
         }
         return !hobbyRepository.existsByPath(newPath);
     }
+
+    public boolean isValidTitle(String newTitle) {
+       return newTitle.length() <= 50;
+    }
+
+    public void updateHobbyTitle(Hobby hobby, String newTitle) {
+        hobby.setTitle(newTitle);
+    }
 }
