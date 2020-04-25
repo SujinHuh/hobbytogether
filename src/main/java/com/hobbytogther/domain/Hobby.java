@@ -22,8 +22,6 @@ import java.util.Set;
 @NamedEntityGraph(name = "Hobby.withZonesAndManagers", attributeNodes = {
         @NamedAttributeNode("zones"),
         @NamedAttributeNode("managers")})
-@NamedEntityGraph(name = "Hobby.withManagers", attributeNodes = {
-        @NamedAttributeNode("managers")})
 @NamedEntityGraph(name = "Hobby.withMembers", attributeNodes = {
         @NamedAttributeNode("members")})
 @Entity
@@ -150,4 +148,7 @@ public class Hobby {
         this.getMembers().remove(account);
     }
 
+    public String getEncodedPath() {
+        return URLEncoder.encode(this.path, StandardCharsets.UTF_8);
+    }
 }

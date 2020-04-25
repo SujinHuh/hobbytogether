@@ -39,6 +39,7 @@ public class HobbySettingsController {
     private final TagRepository tagRepository;
     private final ZoneRepository zoneRepository;
     private final ObjectMapper objectMapper;
+    private final HobbyRepository hobbyRepository;
 
     @GetMapping("/description")
     public String viewHobbySetting(@CurrentAccount Account account, @PathVariable String path, Model model) {
@@ -63,7 +64,7 @@ public class HobbySettingsController {
 
         hobbyService.updateHobbyDescription(hobby, hobbyDescriptionForm);
         attributes.addFlashAttribute("message", "Hobby 소개를 수정했습니다.");
-        return "redirect:/hobby/" + getPath(path) + "/settings/description";
+        return "redirect:/hobby/" + hobby.getEncodedPath() + "/settings/description";
     }
 
     /** Banner */
@@ -81,26 +82,24 @@ public class HobbySettingsController {
         Hobby hobby = hobbyService.getHobbyToUpdate(account, path);
         hobbyService.updateHobbyImage(hobby, image);
         attributes.addFlashAttribute("message", "hobby 이미지를 수정했습니다.");
-        return "redirect:/hobby/" + getPath(path) + "/settings/banner";
+        return "redirect:/hobby/" + hobby.getEncodedPath() + "/settings/banner";
     }
 
     @PostMapping("/banner/enable")
     public String enableHobbyBanner(@CurrentAccount Account account, @PathVariable String path) {
         Hobby hobby = hobbyService.getHobbyToUpdate(account, path);
         hobbyService.enableHobbyBanner(hobby);
-        return "redirect:/hobby/" + getPath(path) + "/settings/banner";
+        return "redirect:/hobby/" + hobby.getEncodedPath() + "/settings/banner";
     }
 
     @PostMapping("/banner/disable")
     public String disableHobbyBanner(@CurrentAccount Account account, @PathVariable String path) {
         Hobby hobby = hobbyService.getHobbyToUpdate(account, path);
         hobbyService.disableHobbyBanner(hobby);
-        return "redirect:/hobby/" + getPath(path) + "/settings/banner";
+        return "redirect:/hobby/" + hobby.getEncodedPath() + "/settings/banner";
     }
 
-    private String getPath(String path) {
-        return URLEncoder.encode(path, StandardCharsets.UTF_8);
-    }
+
 
 
     @GetMapping("/tags")
@@ -198,7 +197,7 @@ public class HobbySettingsController {
         Hobby hobby = hobbyService.getHobbyToUpdateStatus(account, path);
         hobbyService.publish(hobby);
         attributes.addFlashAttribute("message", "hobby를 공개했습니다.");
-        return "redirect:/hobby/" + getPath(path) + "/settings/hobby";
+        return "redirect:/hobby/" + hobby.getEncodedPath() + "/settings/hobby";
     }
 
     @PostMapping("/hobby/close")
@@ -207,7 +206,7 @@ public class HobbySettingsController {
         Hobby hobby = hobbyService.getHobbyToUpdateStatus(account, path);
         hobbyService.close(hobby);
         attributes.addFlashAttribute("message", "hobby를 종료했습니다.");
-        return "redirect:/hobby/" + getPath(path) + "/settings/hobby";
+        return "redirect:/hobby/" + hobby.getEncodedPath() + "/settings/hobby";
     }
 
     @PostMapping("/recruit/start")
@@ -216,12 +215,12 @@ public class HobbySettingsController {
         Hobby hobby = hobbyService.getHobbyToUpdateStatus(account, path);
         if (!hobby.canUpdateRecruiting()) {
             attributes.addFlashAttribute("message", "1시간 안에 인원 모집 설정을 여러번 변경할 수 없습니다.");
-            return "redirect:/hobby/" + getPath(path) + "/settings/hobby";
+            return "redirect:/hobby/" + hobby.getEncodedPath() + "/settings/hobby";
         }
 
         hobbyService.startRecruit(hobby);
         attributes.addFlashAttribute("message", "인원 모집을 시작합니다.");
-        return "redirect:/hobby/" + getPath(path) + "/settings/hobby";
+        return "redirect:/hobby/" + hobby.getEncodedPath() + "/settings/hobby";
     }
 
     @PostMapping("/recruit/stop")
@@ -230,12 +229,12 @@ public class HobbySettingsController {
         Hobby hobby = hobbyService.getHobbyToUpdate(account, path);
         if (!hobby.canUpdateRecruiting()) {
             attributes.addFlashAttribute("message", "1시간 안에 인원 모집 설정을 여러번 변경할 수 없습니다.");
-            return "redirect:/hobby/" + getPath(path) + "/settings/hobby";
+            return "redirect:/hobby/" + hobby.getEncodedPath() + "/settings/hobby";
         }
 
         hobbyService.stopRecruit(hobby);
         attributes.addFlashAttribute("message", "인원 모집을 종료합니다.");
-        return "redirect:/hobby/" + getPath(path) + "/settings/hobby";
+        return "redirect:/hobby/" + hobby.getEncodedPath() + "/settings/hobby";
     }
 
     /** Hobby Path */
@@ -254,7 +253,7 @@ public class HobbySettingsController {
 
         hobbyService.updateHobbyPath(hobby,newPath);
         attributes.addFlashAttribute("message", "Hobby의 경로를 수정했습니다.");
-        return "redirect:/hobby/" + getPath(newPath) + "/settings/hobby";
+        return "redirect:/hobby/" + hobby.getEncodedPath() + "/settings/hobby";
 
     }
 
@@ -273,7 +272,7 @@ public class HobbySettingsController {
 
         hobbyService.updateHobbyTitle(hobby, newTitle);
         attributes.addFlashAttribute("message", "Hobby 이름을 수정했습니다.");
-        return "redirect:/hobby/" + getPath(path) + "/settings/hobby";
+        return "redirect:/hobby/" + hobby.getEncodedPath()+ "/settings/hobby";
     }
 
 
