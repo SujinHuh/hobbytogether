@@ -137,4 +137,12 @@ public class HobbyService {
     public void updateHobbyTitle(Hobby hobby, String newTitle) {
         hobby.setTitle(newTitle);
     }
+
+    public void remove(Hobby hobby) {
+        if(hobby.isRemovabel()) {
+            hobbyRepository.delete(hobby);
+        } else {
+            throw new IllegalArgumentException("Hobby를  삭제할 수 없습니다. ");
+        }
+    }
 }

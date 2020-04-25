@@ -117,7 +117,7 @@
             </div>
 
             <hr/>
-            <div class="row">
+            <div class="row" th:if="${hobby.isRemovabel()}">
                 <h5 class="col-sm-12 text-danger">Hobby 삭제</h5>
                 <form class="col-sm-12" action="#" th:action="@{'/hobby/' + ${hobby.getPath()} + '/settings/hobby/remove'}" method="post" novalidate>
                     <div class="alert alert-danger" role="alert">

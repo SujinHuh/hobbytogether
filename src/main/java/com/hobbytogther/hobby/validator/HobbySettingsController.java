@@ -276,4 +276,13 @@ public class HobbySettingsController {
         return "redirect:/hobby/" + getPath(path) + "/settings/hobby";
     }
 
+
+    /** Hobby Remove */
+    @PostMapping("/hobby/remove")
+    public String removeHobby(@CurrentAccount Account account, @PathVariable String path, Model model) {
+        Hobby hobby = hobbyService.getHobbyToUpdateStatus(account, path);
+        hobbyService.remove(hobby);
+        return "redirect:/";
+    }
+
 }
