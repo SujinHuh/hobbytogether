@@ -31,7 +31,7 @@ public class HobbyController {
     private final HobbyRepository hobbyRepository;
 
     @InitBinder("hobbyForm")
-    public void studyFormInitBinder(WebDataBinder webDataBinder) {
+    public void hobbyFormInitBinder(WebDataBinder webDataBinder) {
         webDataBinder.addValidators(hobbyFormValidator);
     }
 
@@ -51,8 +51,8 @@ public class HobbyController {
             return "hobby/form";
         }
 
-        Hobby newStudy = hobbyService.createNewHobby(modelMapper.map(hobbyForm, Hobby.class), account);
-        return "redirect:/hobby/" + URLEncoder.encode(newStudy.getPath(), StandardCharsets.UTF_8);
+        Hobby newHobby = hobbyService.createNewHobby(modelMapper.map(hobbyForm, Hobby.class), account);
+        return "redirect:/hobby/" + URLEncoder.encode(newHobby.getPath(), StandardCharsets.UTF_8);
     }
 
     @GetMapping("/hobby/{path}")
@@ -64,11 +64,30 @@ public class HobbyController {
     }
 
     @GetMapping("/hobby/{path}/members")
-    public String viewStudyMembers(@CurrentAccount Account account, @PathVariable String path, Model model) {
+    public String viewHobbyMembers(@CurrentAccount Account account, @PathVariable String path, Model model) {
         Hobby hobby = hobbyService.getHobby(path);
         model.addAttribute(account);
         model.addAttribute(hobby);
         return "hobby/members";
     }
 
+
+    @GetMapping("/hobby/{path}/join")
+    public String joinHobby(@CurrentAccount Account account, @PathVariable String path) {
+        Hobby hobby = hobbyRepository.findHobbyWithMembersByPath(path);
+        hobbyService.addMember(hobby, account);
+        return "redirect:/hobby/" + getPath(path) + "/members";
+    }
+
+    @GetMapping("/hobby/{path}/leave")
+    public String leaveHobby(@CurrentAccount Account account, @PathVariable String path) {
+        Hobby hobby = hobbyRepository.findHobbyWithMembersByPath(path);
+        hobbyService.removeMember(hobby, account);
+        return "redirect:/hobby/" + getPath(path) + "/members";
+    }
+
+
+    private String getPath(String path) {
+        return URLEncoder.encode(path, StandardCharsets.UTF_8);
+    }
 }

@@ -145,4 +145,12 @@ public class HobbyService {
             throw new IllegalArgumentException("Hobby를  삭제할 수 없습니다. ");
         }
     }
+
+    public void addMember(Hobby hobby, Account account) {
+        hobby.addMember(account);
+    }
+
+    public void removeMember(Hobby hobby, Account account) {
+        hobby.removeMember(account);
+    }
 }

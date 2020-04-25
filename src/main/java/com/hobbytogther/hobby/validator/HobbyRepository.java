@@ -22,5 +22,7 @@ public interface HobbyRepository extends JpaRepository<Hobby ,Long> {
     Hobby findHobbyWithManagersByPath(String path);
 
     boolean existsByTitle(String newTitle);
+
+    Hobby findHobbyWithMembersByPath(String path);
 }
 
