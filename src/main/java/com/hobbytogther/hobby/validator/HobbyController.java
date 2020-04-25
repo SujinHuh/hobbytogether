@@ -71,7 +71,7 @@ public class HobbyController {
         return "hobby/members";
     }
 
-
+    /** Hobby 가입 */
     @GetMapping("/hobby/{path}/join")
     public String joinHobby(@CurrentAccount Account account, @PathVariable String path) {
         Hobby hobby = hobbyRepository.findHobbyWithMembersByPath(path);
@@ -79,6 +79,7 @@ public class HobbyController {
         return "redirect:/hobby/" + hobby.getEncodedPath() + "/members";
     }
 
+    /** Hobby 탈퇴 */
     @GetMapping("/hobby/{path}/leave")
     public String leaveHobby(@CurrentAccount Account account, @PathVariable String path) {
         Hobby hobby = hobbyRepository.findHobbyWithMembersByPath(path);
