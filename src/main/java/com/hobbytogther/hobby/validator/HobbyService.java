@@ -103,20 +103,20 @@ public class HobbyService {
             throw new IllegalArgumentException(path + "에 해당하는 스터디가 없습니다.");
         }
     }
-    public void publish(Hobby study) {
-        study.publish();
+    public void publish(Hobby hobby) {
+        hobby.publish();
     }
 
-    public void close(Hobby study) {
-        study.close();
+    public void close(Hobby hobby) {
+        hobby.close();
     }
 
-    public void startRecruit(Hobby study) {
-        study.startRecruit();
+    public void startRecruit(Hobby hobby) {
+        hobby.startRecruit();
     }
 
-    public void stopRecruit(Hobby study) {
-        study.stopRecruit();
+    public void stopRecruit(Hobby hobby) {
+        hobby.stopRecruit();
     }
 
     public void updateHobbyPath(Hobby hobby, String newPath) {

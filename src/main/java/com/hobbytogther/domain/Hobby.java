@@ -15,12 +15,13 @@ import java.util.Set;
         @NamedAttributeNode("zones"),
         @NamedAttributeNode("managers"),
         @NamedAttributeNode("members")})
-
 @NamedEntityGraph(name = "Hobby.withTagsAndManagers", attributeNodes = {
         @NamedAttributeNode("tags"),
         @NamedAttributeNode("managers")})
 @NamedEntityGraph(name = "Hobby.withZonesAndManagers", attributeNodes = {
         @NamedAttributeNode("zones"),
+        @NamedAttributeNode("managers")})
+@NamedEntityGraph(name = "Hobby.withManagers", attributeNodes = {
         @NamedAttributeNode("managers")})
 @NamedEntityGraph(name = "Hobby.withMembers", attributeNodes = {
         @NamedAttributeNode("members")})

@@ -23,6 +23,7 @@ public interface HobbyRepository extends JpaRepository<Hobby ,Long> {
 
     boolean existsByTitle(String newTitle);
 
+    @EntityGraph(value = "Hobby.withMembers", type = EntityGraph.EntityGraphType.FETCH)
     Hobby findHobbyWithMembersByPath(String path);
 }
 
