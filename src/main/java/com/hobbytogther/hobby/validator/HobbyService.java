@@ -153,4 +153,6 @@ public class HobbyService {
     public void removeMember(Hobby hobby, Account account) {
         hobby.removeMember(account);
     }
+
+
 }

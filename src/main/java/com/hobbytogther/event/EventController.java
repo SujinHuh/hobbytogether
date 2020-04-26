@@ -5,6 +5,7 @@ import com.hobbytogther.domain.Account;
 import com.hobbytogther.domain.Event;
 import com.hobbytogther.domain.Hobby;
 import com.hobbytogther.event.validator.EventValidator;
+import com.hobbytogther.hobby.validator.HobbyRepository;
 import com.hobbytogther.hobby.validator.HobbyService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -15,6 +16,9 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequestMapping("/hobby/{path}")
@@ -22,6 +26,7 @@ import javax.validation.Valid;
 public class EventController {
 
     private final HobbyService hobbyService;
+    private final HobbyRepository hobbyRepository;
     private final EventService eventService;
     private final ModelMapper modelMapper;
     private final EventValidator eventValidator;
@@ -62,8 +67,34 @@ public class EventController {
 
         model.addAttribute(account);
         model.addAttribute(eventRepository.findById(id).orElseThrow());
-        model.addAttribute(hobbyService.getHobby(path));
+        model.addAttribute(hobbyRepository.findHobbyWithManagersByPath(path));
 
         return "event/view";
     }
+
+    /** Event 목록 조회 */
+    @GetMapping("/events")
+    public String viewHobbyEvents(@CurrentAccount Account account, @PathVariable String path, Model model) {
+        Hobby hobby = hobbyService.getHobby(path);
+        model.addAttribute(account);
+        model.addAttribute(hobby);
+
+        List<Event> events = eventRepository.findByHobbyOrderByStartDateTime(hobby);
+        List<Event> newEvents = new ArrayList<>();
+        List<Event> oldEvents = new ArrayList<>();
+        events.forEach(e -> {
+            if (e.getEndDateTime().isBefore(LocalDateTime.now())) {
+                oldEvents.add(e);
+            } else {
+                newEvents.add(e);
+            }
+        });
+
+        model.addAttribute("newEvents", newEvents);
+        model.addAttribute("oldEvents", oldEvents);
+
+        return "hobby/events";
+    }
+
+
 }

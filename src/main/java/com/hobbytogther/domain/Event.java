@@ -4,12 +4,14 @@ import com.hobbytogther.account.UserAccount;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.Columns;
-
-import javax.lang.model.element.AnnotationValueVisitor;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+
+@NamedEntityGraph(
+        name = "Event.withEnrollments",
+        attributeNodes = @NamedAttributeNode("enrollments")
+)
 
 @Entity
 @Getter @Setter @EqualsAndHashCode(of ="id")
@@ -85,5 +87,10 @@ public class Event {
         }
         return false;
     }
+    /** 자리 남음 */
+    public int numberOfRemainSpots() {
+        return this.limitOfEnrollments - (int) this.enrollments.stream().filter(Enrollment::isAccepted).count();
+    }
+
 
 }
