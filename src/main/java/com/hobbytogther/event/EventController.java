@@ -96,5 +96,37 @@ public class EventController {
         return "hobby/events";
     }
 
+    /** Event 수정 */
+    @GetMapping("/events/{id}/edit")
+    public String updateEventForm(@CurrentAccount Account account,
+                                  @PathVariable String path, @PathVariable Long id, Model model) {
+        Hobby hobby = hobbyService.getHobbyToUpdate(account, path);
+        Event event = eventRepository.findById(id).orElseThrow();
+        model.addAttribute(hobby);
+        model.addAttribute(account);
+        model.addAttribute(event);
+        model.addAttribute(modelMapper.map(event, EventForm.class)); //view 전달
+        return "event/update-form";
+    }
 
+  
+    @PostMapping("/events/{id}/edit")
+    public String updateEventSubmit(@CurrentAccount Account account, @PathVariable String path,
+                                    @PathVariable Long id, @Valid EventForm eventForm, Errors errors,
+                                    Model model) {
+        Hobby hobby = hobbyService.getHobbyToUpdate(account, path);
+        Event event = eventRepository.findById(id).orElseThrow();
+        eventForm.setEventType(event.getEventType());
+        eventValidator.validateUpdateForm(eventForm, event, errors);
+
+        if (errors.hasErrors()) {
+            model.addAttribute(account);
+            model.addAttribute(hobby);
+            model.addAttribute(event);
+            return "event/update-form";
+        }
+
+        eventService.updateEvent(event, eventForm);
+        return "redirect:/hobby/" + hobby.getEncodedPath() +  "/events/" + event.getId();
+    }
 }
