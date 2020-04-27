@@ -155,4 +155,10 @@ public class HobbyService {
     }
 
 
+    public Hobby getHobbyToEnroll(String path) {
+         Hobby hobby = hobbyRepository.findHobbyOnlyByPath(path);
+         checkIfExistingHobby(path,hobby);
+
+         return hobby;
+    }
 }

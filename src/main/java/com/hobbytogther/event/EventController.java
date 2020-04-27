@@ -140,4 +140,21 @@ public class EventController {
         return "redirect:/hobby/" + hobby.getEncodedPath() + "/events";
     }
 
+    /** Event 참가신청 */
+    @PostMapping("/events/{id}/enroll")
+    public String newEnrollment(@CurrentAccount Account account,
+                                @PathVariable String path, @PathVariable Long id) {
+        Hobby hobby = hobbyService.getHobbyToEnroll(path);//관리자 권한이 아니여도됨
+        eventService.newEnrollment(eventRepository.findById(id).orElseThrow(), account);
+        return "redirect:/hobby/" + hobby.getEncodedPath() +  "/events/" + id;
+    }
+
+    /** Event 참가신청 취소 */
+    @PostMapping("/events/{id}/disenroll")
+    public String cancelEnrollment(@CurrentAccount Account account,
+                                   @PathVariable String path, @PathVariable Long id) {
+        Hobby hobby = hobbyService.getHobbyToEnroll(path);
+        eventService.cancelEnrollment(eventRepository.findById(id).orElseThrow(), account);
+        return "redirect:/hobby/" + hobby.getEncodedPath() +  "/events/" + id;
+    }
 }

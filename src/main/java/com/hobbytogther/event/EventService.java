@@ -1,6 +1,7 @@
 package com.hobbytogther.event;
 
 import com.hobbytogther.domain.Account;
+import com.hobbytogther.domain.Enrollment;
 import com.hobbytogther.domain.Event;
 import com.hobbytogther.domain.Hobby;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ public class EventService {
 
     private final EventRepository eventRepository;
     private final ModelMapper modelMapper;
+    private final EnrollmentRepository enrollmentRepository;
 
     public Event createEvent(Event event, Hobby hobby, Account account) {
         event.setCreatedBy(account);
@@ -28,9 +30,28 @@ public class EventService {
 
     public void updateEvent(Event event, EventForm eventForm) {
         modelMapper.map(eventForm,event);
+        event.acceptWaitingList(); // Event를 수정 할 때 인원이 모집이 늘어난 숫자 만큼 자동으로 늘려주는 것
     }
 
     public void deleteEvent(Event event) {
         eventRepository.delete(event);
+    }
+
+    public void newEnrollment(Event event, Account account) {
+        if (!enrollmentRepository.existsByEventAndAccount(event, account)) {
+            Enrollment enrollment = new Enrollment();
+            enrollment.setEnrolledAt(LocalDateTime.now());
+            enrollment.setAccepted(event.isAbleToAcceptWaitingEnrollment()); //상황에 알잦게 신청과 동시에 확정상태
+            enrollment.setAccount(account);
+            event.addEnrollment(enrollment);
+            enrollmentRepository.save(enrollment);
+        }
+    }
+
+    public void cancelEnrollment(Event event, Account account) {
+        Enrollment enrollment = enrollmentRepository.findByEventAndAccount(event, account);
+        event.removeEnrollment(enrollment);
+        enrollmentRepository.delete(enrollment);
+        event.acceptNextWaitingEnrollment();
     }
 }
