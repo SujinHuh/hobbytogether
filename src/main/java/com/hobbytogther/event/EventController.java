@@ -129,4 +129,15 @@ public class EventController {
         eventService.updateEvent(event, eventForm);
         return "redirect:/hobby/" + hobby.getEncodedPath() +  "/events/" + event.getId();
     }
+
+    /** Event Cancel */
+    //@PostMapping("/events/{id}/delete")
+    @DeleteMapping("/events/{id}")  /** application.properties에서 추가 */
+    public String cancelEvent(@CurrentAccount Account account, @PathVariable String path, @PathVariable Long id) {
+        Hobby hobby = hobbyService.getHobbyToUpdateStatus(account,path);
+        eventService.deleteEvent(eventRepository.findById(id).orElseThrow());
+
+        return "redirect:/hobby/" + hobby.getEncodedPath() + "/events";
+    }
+
 }

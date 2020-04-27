@@ -5,11 +5,10 @@
 <nav th:replace="fragements.html :: main-nav"></nav>
 <div th:replace="fragements.html :: hobby-banner"></div>
 <div class="container">
-    <div th:replace="fragments.html :: event-form (mode='new', action='/hobby/' + ${hobby.path} + '/new-event/')"></div>
-
+    <div th:replace="fragements.html :: event-form (mode='new', action='/hobby/' + ${hobby.path} + '/new-event/')"></div>
     <div th:replace="fragements.html :: footer"></div>
 </div>
 <script th:replace="fragements.html :: form-validation"></script>
 <script th:replace="fragements.html :: editor-script"></script>
 </body>
-</html> 
+</html>
