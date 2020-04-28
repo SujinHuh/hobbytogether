@@ -87,6 +87,7 @@ public class Hobby {
         return this.members.contains(userAccount.getAccount());
     }
 
+
     public boolean isManager(UserAccount userAccount) {
         return this.managers.contains(userAccount.getAccount());
     }

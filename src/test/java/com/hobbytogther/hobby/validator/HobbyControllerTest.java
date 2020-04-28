@@ -2,6 +2,7 @@ package com.hobbytogther.hobby.validator;
 
 import com.hobbytogther.WithAccount;
 import com.hobbytogther.account.AccountRepository;
+import com.hobbytogther.account.UserAccount;
 import com.hobbytogther.domain.Account;
 import com.hobbytogther.domain.Hobby;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +39,8 @@ class HobbyControllerTest {
     AccountRepository accountRepository;
     @Autowired
     HobbyService hobbyService;
+
+    UserAccount userAccount;
 
     @AfterEach
     void afterEach() {
@@ -112,13 +115,50 @@ class HobbyControllerTest {
         hobby.setShortDescription("short description");
         hobby.setFullDescription("<p>full description</p>");
 
-        Account keesun = accountRepository.findByNickname("keesun");
-        hobbyService.createNewHobby(hobby, keesun);
+        Account sujin = accountRepository.findByNickname("sujin");
+        hobbyService.createNewHobby(hobby, sujin);
 
         mockMvc.perform(get("/hobby/test-path"))
                 .andExpect(view().name("hobby/view"))
                 .andExpect(model().attributeExists("account"))
                 .andExpect(model().attributeExists("hobby"));
+    }
+
+    @Test
+    @WithAccount("sujin")
+    @DisplayName("Hobby 가입")
+    void hobbyJoin() throws Exception {
+
+        Hobby hobby = new Hobby();
+        hobby.setPath("test-path");
+        hobby.setTitle("test hobby");
+        hobby.setShortDescription("short description");
+        hobby.setFullDescription("<p>full description</p>");
+
+        Account account = accountRepository.findByNickname("sujin");
+
+        assertNotNull(hobby);
+        hobbyService.addMember(hobby,account);
+        assertTrue(hobby.getMembers().contains(account));
+    }
+
+    @Test
+    @WithAccount("sujin")
+    @DisplayName("Hobby 탈퇴")
+    void hobbyleave() throws Exception {
+
+        Hobby hobby = new Hobby();
+        hobby.setPath("test-path");
+        hobby.setTitle("test hobby");
+        hobby.setShortDescription("short description");
+        hobby.setFullDescription("<p>full description</p>");
+
+        Account sujin = accountRepository.findByNickname("sujin");
+
+        assertNotNull(hobby);
+        hobbyService.removeMember(hobby,sujin);
+
+        assertFalse(hobby.getMembers().contains(sujin));
     }
 
 }
