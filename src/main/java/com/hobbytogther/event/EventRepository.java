@@ -1,6 +1,5 @@
 package com.hobbytogther.event;
 
-
 import com.hobbytogther.domain.Event;
 import com.hobbytogther.domain.Hobby;
 import org.springframework.data.jpa.repository.EntityGraph;

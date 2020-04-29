@@ -29,7 +29,7 @@
         </div>
     </div>
 </div>
-<script src="/node_modules/@yaireo/tagify/dist/tagify.min.js"></script>
+<script th:replace="fragements.html :: ajax-csrf-header"></script>
 <script th:replace="fragements.html :: update-tags(baseUrl='/settings/tags')"></script>
 </body>
 </html>

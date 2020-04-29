@@ -6,11 +6,11 @@
 <div class="container">
     <div class="row mt-5 justify-content-center">
         <div class="col-2">
-                        <div th:replace="fragements.html :: settings-menu(currentMenu='tags')"></div>
+            <div th:replace="fragements.html :: settings-menu(currentMenu='zones')"></div>
         </div>
         <div class="col-8">
             <div class="row">
-                <h2 class="col-12">주요 활동 지</h2>
+                <h2 class="col-12">주요 활동 지역</h2>
             </div>
             <div class="row">
                 <div class="col-12">
@@ -26,15 +26,7 @@
         </div>
     </div>
 </div>
-<!--<script type="application/javascript" th:inline="javascript" th:fragment="ajax-csrf-header">-->
-<!--    $(function() {-->
-<!--        var csrfToken = /*[[${_csrf.token}]]*/ null;-->
-<!--        var csrfHeader = /*[[${_csrf.headerName}]]*/ null;-->
-<!--        $(document).ajaxSend(function (e, xhr, options) {-->
-<!--            xhr.setRequestHeader(csrfHeader, csrfToken);-->
-<!--        });-->
-<!--    });-->
-<!--</script>-->
+
 <script th:replace="fragements.html :: ajax-csrf-header"></script>
 <script th:replace="fragements.html :: update-zones(baseUrl='/settings/zones')"></script>
 </body>

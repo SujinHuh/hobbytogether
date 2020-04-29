@@ -76,7 +76,7 @@ public class HobbyController {
     public String joinHobby(@CurrentAccount Account account, @PathVariable String path) {
         Hobby hobby = hobbyRepository.findHobbyWithMembersByPath(path);
         hobbyService.addMember(hobby, account);
-        return "redirect:/hobby/" + hobby.getEncodedPath() + "/members";
+        return "redirect:/hobby/" + getPath(path) + "/members";
     }
 
     /** Hobby 탈퇴 */
@@ -84,7 +84,11 @@ public class HobbyController {
     public String leaveHobby(@CurrentAccount Account account, @PathVariable String path) {
         Hobby hobby = hobbyRepository.findHobbyWithMembersByPath(path);
         hobbyService.removeMember(hobby, account);
-        return "redirect:/hobby/" + hobby.getEncodedPath() + "/members";
+        return "redirect:/hobby/" + getPath(path) + "/members";
     }
 
+
+    private String getPath(String path) {
+        return URLEncoder.encode(path, StandardCharsets.UTF_8);
+    }
 }

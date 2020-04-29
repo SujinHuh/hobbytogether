@@ -4,6 +4,7 @@ import com.hobbytogther.domain.Account;
 import com.hobbytogther.domain.Enrollment;
 import com.hobbytogther.domain.Event;
 import com.hobbytogther.domain.Hobby;
+import com.hobbytogther.event.form.EventForm;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -29,10 +30,9 @@ public class EventService {
     }
 
     public void updateEvent(Event event, EventForm eventForm) {
-        modelMapper.map(eventForm,event);
-        event.acceptWaitingList(); // Event를 수정 할 때 인원이 모집이 늘어난 숫자 만큼 자동으로 늘려주는 것
+        modelMapper.map(eventForm, event);
+        event.acceptWaitingList();
     }
-
     public void deleteEvent(Event event) {
         eventRepository.delete(event);
     }

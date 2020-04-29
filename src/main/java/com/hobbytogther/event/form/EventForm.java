@@ -1,4 +1,4 @@
-package com.hobbytogther.event;
+package com.hobbytogther.event.form;
 
 import com.hobbytogther.domain.EventType;
 import lombok.Data;
@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 
 @Data
 public class EventForm {
+
     @NotBlank
     @Length(max = 50)
     private String title;
@@ -30,4 +31,7 @@ public class EventForm {
 
     @Min(2)
     private Integer limitOfEnrollments = 2;
+
+
+
 }

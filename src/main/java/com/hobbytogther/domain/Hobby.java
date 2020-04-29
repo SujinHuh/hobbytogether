@@ -76,6 +76,7 @@ public class Hobby {
         this.managers.add(account);
     }
 
+
     public boolean isJoinable(UserAccount userAccount) {
         Account account = userAccount.getAccount();
         return this.isPublished() && this.isRecruiting()
@@ -137,8 +138,8 @@ public class Hobby {
     }
 
     public boolean isRemovabel() {
-         published = this.isPublished();
-         return !published;
+        published = this.isPublished();
+        return !published;
     }
 
     public void addMember(Account account) {
@@ -148,7 +149,6 @@ public class Hobby {
     public void removeMember(Account account) {
         this.getMembers().remove(account);
     }
-
     public String getEncodedPath() {
         return URLEncoder.encode(this.path, StandardCharsets.UTF_8);
     }
