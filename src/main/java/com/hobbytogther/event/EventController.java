@@ -160,29 +160,29 @@ public class EventController {
         eventService.acceptEnrollment(event, enrollment);
         return "redirect:/hobby/" + hobby.getEncodedPath() + "/events/" + event.getId();
     }
-//
-//    @GetMapping("/events/{eventId}/enrollments/{enrollmentId}/reject")
-//    public String rejectEnrollment(@CurrentAccount Account account, @PathVariable String path,
-//                                   @PathVariable("eventId") Event event, @PathVariable("enrollmentId") Enrollment enrollment) {
-//        Hobby hobby = hobbyService.getHobbyToUpdate(account, path);
-//        eventService.rejectEnrollment(event, enrollment);
-//        return "redirect:/hobby/" + hobby.getEncodedPath() + "/events/" + event.getId();
-//    }
-//
-//    @GetMapping("/events/{eventId}/enrollments/{enrollmentId}/checkin")
-//    public String checkInEnrollment(@CurrentAccount Account account, @PathVariable String path,
-//                                    @PathVariable("eventId") Event event, @PathVariable("enrollmentId") Enrollment enrollment) {
-//        Hobby hobby = hobbyService.getHobbyToUpdate(account, path);
-//        eventService.checkInEnrollment(enrollment);
-//        return "redirect:/hobby/" + hobby.getEncodedPath() + "/events/" + event.getId();
-//    }
-//
-//    @GetMapping("/events/{eventId}/enrollments/{enrollmentId}/cancel-checkin")
-//    public String cancelCheckInEnrollment(@CurrentAccount Account account, @PathVariable String path,
-//                                          @PathVariable("eventId") Event event, @PathVariable("enrollmentId") Enrollment enrollment) {
-//        Hobby hobby = hobbyService.getHobbyToUpdate(account, path);
-//        eventService.cancelCheckInEnrollment(enrollment);
-//        return "redirect:/hobby/" + hobby.getEncodedPath() + "/events/" + event.getId();
-//    }
+
+    @GetMapping("/events/{eventId}/enrollments/{enrollmentId}/reject")
+    public String rejectEnrollment(@CurrentAccount Account account, @PathVariable String path,
+                                   @PathVariable("eventId") Event event, @PathVariable("enrollmentId") Enrollment enrollment) {
+        Hobby hobby = hobbyService.getHobbyToUpdate(account, path);
+        eventService.rejectEnrollment(event, enrollment);
+        return "redirect:/hobby/" + hobby.getEncodedPath() + "/events/" + event.getId();
+    }
+
+    @GetMapping("/events/{eventId}/enrollments/{enrollmentId}/checkin")
+    public String checkInEnrollment(@CurrentAccount Account account, @PathVariable String path,
+                                    @PathVariable("eventId") Event event, @PathVariable("enrollmentId") Enrollment enrollment) {
+        Hobby hobby = hobbyService.getHobbyToUpdate(account, path);
+        eventService.checkInEnrollment(enrollment);
+        return "redirect:/hobby/" + hobby.getEncodedPath() + "/events/" + event.getId();
+    }
+
+    @GetMapping("/events/{eventId}/enrollments/{enrollmentId}/cancel-checkin")
+    public String cancelCheckInEnrollment(@CurrentAccount Account account, @PathVariable String path,
+                                          @PathVariable("eventId") Event event, @PathVariable("enrollmentId") Enrollment enrollment) {
+        Hobby hobby = hobbyService.getHobbyToUpdate(account, path);
+        eventService.cancelCheckInEnrollment(enrollment);
+        return "redirect:/hobby/" + hobby.getEncodedPath() + "/events/" + event.getId();
+    }
 
 }

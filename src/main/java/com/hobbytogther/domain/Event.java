@@ -50,18 +50,20 @@ public class Event {
     private Integer limitOfEnrollments;
 
     @OneToMany(mappedBy = "event")  //관걔 맵핑
+    @OrderBy("enrolledAt")
     private List<Enrollment> enrollments = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     private EventType eventType;
 
     public boolean isEnrollableFor(UserAccount userAccount) {
-        return isNotClosed() && !isAlreadyEnrolled(userAccount); //이벤트 종료 되지 않았고, 참석하지 않았으면
+        return isNotClosed() && !isAttended(userAccount) && !isAlreadyEnrolled(userAccount);
+        //이벤트 종료 되지 않았고, 참석하지 않았으면
     }
 
     /** 참석 취소 */
     public boolean isDisenrollableFor(UserAccount userAccount) {
-        return isNotClosed() && isAlreadyEnrolled(userAccount);
+        return isNotClosed() && !isAttended(userAccount) && isAlreadyEnrolled(userAccount);
     }
 
     private boolean isNotClosed() {
@@ -163,6 +165,12 @@ public class Event {
         if (this.eventType == EventType.CONFIRMATIVE
                 && this.limitOfEnrollments > this.getNumberOfAcceptedEnrollments()) {
             enrollment.setAccepted(true);
+        }
+    }
+
+    public void reject(Enrollment enrollment) {
+        if (this.eventType == EventType.CONFIRMATIVE) {
+            enrollment.setAccepted(false);
         }
     }
 }
