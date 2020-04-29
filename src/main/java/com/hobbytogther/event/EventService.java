@@ -54,4 +54,6 @@ public class EventService {
         enrollmentRepository.delete(enrollment);
         event.acceptNextWaitingEnrollment();
     }
+
+
 }

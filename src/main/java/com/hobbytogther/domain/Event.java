@@ -157,4 +157,12 @@ public class Event {
 
         return null;
     }
+
+
+    public void accept(Enrollment enrollment) {
+        if (this.eventType == EventType.CONFIRMATIVE
+                && this.limitOfEnrollments > this.getNumberOfAcceptedEnrollments()) {
+            enrollment.setAccepted(true);
+        }
+    }
 }

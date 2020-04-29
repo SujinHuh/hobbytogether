@@ -2,6 +2,7 @@ package com.hobbytogther.event;
 
 import com.hobbytogther.account.CurrentAccount;
 import com.hobbytogther.domain.Account;
+import com.hobbytogther.domain.Enrollment;
 import com.hobbytogther.domain.Event;
 import com.hobbytogther.domain.Hobby;
 import com.hobbytogther.event.form.EventForm;
@@ -152,13 +153,13 @@ public class EventController {
         return "redirect:/hobby/" + hobby.getEncodedPath() + "/events/" + event.getId();
     }
 
-//    @GetMapping("events/{eventId}/enrollments/{enrollmentId}/accept")
-//    public String acceptEnrollment(@CurrentAccount Account account, @PathVariable String path,
-//                                   @PathVariable("eventId") Event event, @PathVariable("enrollmentId") Enrollment enrollment) {
-//        Hobby hobby = hobbyService.getHobbyToUpdate(account, path);
-//        eventService.acceptEnrollment(event, enrollment);
-//        return "redirect:/hobby/" + hobby.getEncodedPath() + "/events/" + event.getId();
-//    }
+    @GetMapping("events/{eventId}/enrollments/{enrollmentId}/accept")
+    public String acceptEnrollment(@CurrentAccount Account account, @PathVariable String path,
+                                   @PathVariable("eventId") Event event, @PathVariable("enrollmentId") Enrollment enrollment) {
+        Hobby hobby = hobbyService.getHobbyToUpdate(account, path);
+        eventService.acceptEnrollment(event, enrollment);
+        return "redirect:/hobby/" + hobby.getEncodedPath() + "/events/" + event.getId();
+    }
 //
 //    @GetMapping("/events/{eventId}/enrollments/{enrollmentId}/reject")
 //    public String rejectEnrollment(@CurrentAccount Account account, @PathVariable String path,
