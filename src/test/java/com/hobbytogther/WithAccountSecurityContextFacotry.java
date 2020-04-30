@@ -1,7 +1,7 @@
 package com.hobbytogther;
 
-import com.hobbytogther.account.AccountService;
-import com.hobbytogther.account.SignUpForm;
+import com.hobbytogther.modules.account.AccountService;
+import com.hobbytogther.modules.account.form.SignUpForm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
