@@ -2,6 +2,7 @@ package com.hobbytogther.modules.hobby;
 
 import com.hobbytogther.WithAccount;
 import com.hobbytogther.modules.account.Account;
+import com.hobbytogther.modules.account.AccountFactory;
 import com.hobbytogther.modules.account.AccountRepository;
 import com.hobbytogther.modules.account.UserAccount;
 import com.hobbytogther.modules.hobby.validator.HobbyRepository;
@@ -25,38 +26,31 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @RequiredArgsConstructor
-class HobbyControllerTest {
+public class HobbyControllerTest {
 
     @Autowired
     MockMvc mockMvc;
-
+    @Autowired
+    HobbyService hobbyService;
     @Autowired
     HobbyRepository hobbyRepository;
-
     @Autowired
     AccountRepository accountRepository;
     @Autowired
-    HobbyService hobbyService;
-
-    UserAccount userAccount;
-
-    @AfterEach
-    void afterEach() {
-        accountRepository.deleteAll();
-    }
+    AccountFactory accountFactory;
+    @Autowired
+    HobbyFactory hobbyFactory;
 
     @Test
     @WithAccount("sujin")
-    @DisplayName("Hobby 개설 조회")
-    public void createHobbyForm() throws Exception {
+    @DisplayName("Hobby 개설 폼 조회")
+    void createHobbyForm() throws Exception {
         mockMvc.perform(get("/new-hobby"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("hobby/form"))
                 .andExpect(model().attributeExists("account"))
-                .andExpect(model().attributeExists("hobbyForm"))
-        ;
+                .andExpect(model().attributeExists("hobbyForm"));
     }
-
 
     @Test
     @WithAccount("sujin")
@@ -77,30 +71,24 @@ class HobbyControllerTest {
         assertTrue(hobby.getManagers().contains(account));
     }
 
-
-
-
     @Test
     @WithAccount("sujin")
-    @DisplayName("hobby 개설 실패")
-    public void createHobby_fail() throws Exception {
+    @DisplayName("Hobby 개설 - 실패")
+    void createHobby_fail() throws Exception {
         mockMvc.perform(post("/new-hobby")
-                .param("path","wrong Path")
-                .param("title","Hobby")
-                .param("shortDescription", "short description hobby")
-                .param("fullDescription", "full description  hobby")
+                .param("path", "wrong path")
+                .param("title", "hobby title")
+                .param("shortDescription", "short description of a hobby")
+                .param("fullDescription", "full description of a hobby")
                 .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("hobby/form"))
                 .andExpect(model().hasErrors())
                 .andExpect(model().attributeExists("hobbyForm"))
-                .andExpect(model().attributeExists("account"))
-
-        ;
+                .andExpect(model().attributeExists("account"));
 
         Hobby hobby = hobbyRepository.findByPath("test-path");
         assertNull(hobby);
-
     }
 
     @Test
@@ -125,38 +113,31 @@ class HobbyControllerTest {
     @Test
     @WithAccount("sujin")
     @DisplayName("Hobby 가입")
-    void hobbyJoin() throws Exception {
+    void joinHobby() throws Exception {
+        Account whiteship = accountFactory.createAccount("whiteship");
+        Hobby hobby = hobbyFactory.createHobby("test-hobby", whiteship);
 
-        Hobby hobby = new Hobby();
-        hobby.setPath("test-path");
-        hobby.setTitle("test hobby");
-        hobby.setShortDescription("short description");
-        hobby.setFullDescription("<p>full description</p>");
+        mockMvc.perform(get("/hobby/" + hobby.getPath() + "/join"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/hobby/" + hobby.getPath() + "/members"));
 
-        Account account = accountRepository.findByNickname("sujin");
-
-        assertNotNull(hobby);
-        hobbyService.addMember(hobby,account);
-        assertTrue(hobby.getMembers().contains(account));
+        Account sujin = accountRepository.findByNickname("sujin");
+        assertTrue(hobby.getMembers().contains(sujin));
     }
 
     @Test
     @WithAccount("sujin")
     @DisplayName("Hobby 탈퇴")
-    void hobbyleave() throws Exception {
-
-        Hobby hobby = new Hobby();
-        hobby.setPath("test-path");
-        hobby.setTitle("test hobby");
-        hobby.setShortDescription("short description");
-        hobby.setFullDescription("<p>full description</p>");
-
+    void leaveHobby() throws Exception {
+        Account whiteship = accountFactory.createAccount("whiteship");
+        Hobby hobby = hobbyFactory.createHobby("test-hobby", whiteship);
         Account sujin = accountRepository.findByNickname("sujin");
+        hobbyService.addMember(hobby, sujin);
 
-        assertNotNull(hobby);
-        hobbyService.removeMember(hobby,sujin);
+        mockMvc.perform(get("/hobby/" + hobby.getPath() + "/leave"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/hobby/" + hobby.getPath() + "/members"));
 
         assertFalse(hobby.getMembers().contains(sujin));
     }
-
 }

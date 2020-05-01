@@ -1,5 +1,7 @@
 package com.hobbytogther.modules.account;
 
+import com.hobbytogther.infra.AbstractContainerBaseTest;
+import com.hobbytogther.infra.MockMvcTest;
 import com.hobbytogther.infra.mail.EmailMessage;
 import com.hobbytogther.infra.mail.EmailService;
 import org.junit.jupiter.api.DisplayName;
@@ -7,9 +9,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestComponent;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
