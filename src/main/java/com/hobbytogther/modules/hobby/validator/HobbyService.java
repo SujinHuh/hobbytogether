@@ -2,11 +2,13 @@ package com.hobbytogther.modules.hobby.validator;
 
 import com.hobbytogther.modules.account.Account;
 import com.hobbytogther.modules.hobby.Hobby;
+import com.hobbytogther.modules.hobby.event.HobbyCreateEvent;
 import com.hobbytogther.modules.tag.Tag;
 import com.hobbytogther.modules.zone.Zone;
 import com.hobbytogther.modules.hobby.form.HobbyDescriptionForm;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
@@ -21,12 +23,15 @@ public class HobbyService {
 
     private final HobbyRepository hobbyRepository;
     private final ModelMapper modelMapper;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     public Hobby createNewHobby(Hobby hobby, Account account) {
         Hobby newHobby = hobbyRepository.save(hobby);
         newHobby.addManager(account);
+        applicationEventPublisher.publishEvent(new HobbyCreateEvent(newHobby));
         return newHobby;
     }
+
     public Hobby getHobbyToUpdate(Account account, String path) {
         Hobby hobby = this.getHobby(path);
         checkIfManager(account, hobby);
