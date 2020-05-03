@@ -6,11 +6,11 @@ import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
 
 @Getter
-public class HobbyCreateEvent {
+public class HobbyCreatedEvent {
 
     private Hobby hobby;
 
-    public HobbyCreateEvent(Hobby hobby) {
+    public HobbyCreatedEvent(Hobby hobby) {
         this.hobby = hobby;
     }
 }

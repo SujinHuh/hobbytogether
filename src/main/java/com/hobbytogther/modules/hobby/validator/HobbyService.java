@@ -2,7 +2,7 @@ package com.hobbytogther.modules.hobby.validator;
 
 import com.hobbytogther.modules.account.Account;
 import com.hobbytogther.modules.hobby.Hobby;
-import com.hobbytogther.modules.hobby.event.HobbyCreateEvent;
+import com.hobbytogther.modules.hobby.event.HobbyCreatedEvent;
 import com.hobbytogther.modules.tag.Tag;
 import com.hobbytogther.modules.zone.Zone;
 import com.hobbytogther.modules.hobby.form.HobbyDescriptionForm;
@@ -28,7 +28,6 @@ public class HobbyService {
     public Hobby createNewHobby(Hobby hobby, Account account) {
         Hobby newHobby = hobbyRepository.save(hobby);
         newHobby.addManager(account);
-        applicationEventPublisher.publishEvent(new HobbyCreateEvent(newHobby));
         return newHobby;
     }
 
@@ -109,6 +108,7 @@ public class HobbyService {
     }
     public void publish(Hobby hobby) {
         hobby.publish();
+        this.applicationEventPublisher.publishEvent(new HobbyCreatedEvent(hobby));
     }
 
     public void close(Hobby hobby) {
