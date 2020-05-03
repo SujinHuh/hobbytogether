@@ -51,6 +51,7 @@
         .popover {
             font-family: -apple-system, BlinkMacSystemFont, "Noto Sans KR", "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
         }
+
         table th {
             font-weight: lighter;
         }
@@ -85,10 +86,11 @@
                 <a class="nav-link" href="#" th:href="@{/sign-up}">가입</a>
             </li>
             <li class="nav-item" sec:authorize="isAuthenticated()">
-                <a class="nav-link" href="#" th:href="@{/notification}">
+                <a class="nav-link" href="#" th:href="@{/notifications}">
                     <!--font-awesome 벨 추가-->
                     <i th:if="${!hasNotification}" class="fa fa-bell-o" aria-hidden="true"></i>
-                    <span class="text-info" th:if="${hasNotification}"><i class="fa fa-bell" aria-hidden="true"></i></span>
+                    <span class="text-info" th:if="${hasNotification}"><i class="fa fa-bell"
+                                                                          aria-hidden="true"></i></span>
                 </a>
             </li>
             <li class="nv-item" sec:authorize="isAuthenticated()">
@@ -337,8 +339,9 @@
 
 <script src="/node_modules/@yaireo/tagify/dist/tagify.min.js"></script>
 <script type="application/javascript" th:inline="javascript">
-    $(function() {
+    $(function () {
         var hobbyPath = "[(${hobby.path})]";
+
         function tagRequest(url, tagTitle) {
             $.ajax({
                 dataType: "json",
@@ -367,7 +370,7 @@
         var tagify = new Tagify(tagInput, {
             pattern: /^.{0,20}$/,
             whitelist: JSON.parse(document.querySelector("#whitelist").textContent),
-            dropdown : {
+            dropdown: {
                 enabled: 1, // suggest tags after a single character input
             } // map tags
         });
@@ -383,7 +386,7 @@
 <div th:fragment="update-tags (baseUrl)">
     <script src="/node_modules/@yaireo/tagify/dist/tagify.min.js"></script>
     <script type="application/javascript" th:inline="javascript">
-        $(function() {
+        $(function () {
             function tagRequest(url, tagTitle) {
                 $.ajax({
                     dataType: "json",
@@ -412,7 +415,7 @@
             var tagify = new Tagify(tagInput, {
                 pattern: /^.{0,20}$/,
                 whitelist: JSON.parse(document.querySelector("#whitelist").textContent),
-                dropdown : {
+                dropdown: {
                     enabled: 1, // suggest tags after a single character input
                 } // map tags
             });
@@ -459,7 +462,7 @@
             var tagify = new Tagify(tagInput, {
                 enforceWhitelist: true,
                 whitelist: JSON.parse(document.querySelector("#whitelist").textContent),
-                dropdown : {
+                dropdown: {
                     enabled: 1, // suggest tags after a single character input
                 } // map tags
             });
@@ -484,25 +487,25 @@
     <script type="application/javascript">
         $(function () {
             moment.locale('ko');
-            $(".date-time").text(function(index, dateTime) {
+            $(".date-time").text(function (index, dateTime) {
                 return moment(dateTime, "YYYY-MM-DD`T`hh:mm").format('LLL');
             });
-            $(".date").text(function(index, dateTime) {
+            $(".date").text(function (index, dateTime) {
                 return moment(dateTime, "YYYY-MM-DD`T`hh:mm").format('LL');
             });
-            $(".weekday").text(function(index, dateTime) {
+            $(".weekday").text(function (index, dateTime) {
                 return moment(dateTime, "YYYY-MM-DD`T`hh:mm").format('dddd');
             });
-            $(".time").text(function(index, dateTime) {
+            $(".time").text(function (index, dateTime) {
                 return moment(dateTime, "YYYY-MM-DD`T`hh:mm").format('LT');
             });
-            $(".calendar").text(function(index, dateTime) {
+            $(".calendar").text(function (index, dateTime) {
                 return moment(dateTime, "YYYY-MM-DD`T`hh:mm").calendar();
             });
-            $(".fromNow").text(function(index, dateTime) {
+            $(".fromNow").text(function (index, dateTime) {
                 return moment(dateTime, "YYYY-MM-DD`T`hh:mm").fromNow();
             });
-            $(".date-weekday-time").text(function(index, dateTime) {
+            $(".date-weekday-time").text(function (index, dateTime) {
                 return moment(dateTime, "YYYY-MM-DD`T`hh:mm").format('LLLL');
             });
         })
@@ -529,40 +532,48 @@
                     모임 이름을 50자 이내로 입력하세요.
                 </small>
                 <small class="invalid-feedback">모임 이름을 입력하세요.</small>
-                <small class="form-text text-danger" th:if="${#fields.hasErrors('title')}" th:errors="*{title}">Error</small>
+                <small class="form-text text-danger" th:if="${#fields.hasErrors('title')}"
+                       th:errors="*{title}">Error</small>
             </div>
             <div class="form-group" th:if="${mode == 'new'}">
                 <label for="eventType">모집 방법</label>
-                <select th:field="*{eventType}"  class="custom-select mr-sm-2" id="eventType" aria-describedby="eventTypeHelp">
+                <select th:field="*{eventType}" class="custom-select mr-sm-2" id="eventType"
+                        aria-describedby="eventTypeHelp">
                     <option th:value="FCFS">선착순</option>
                     <option th:value="CONFIRMATIVE">관리자 확인</option>
                 </select>
                 <small id="eventTypeHelp" class="form-text text-muted">
                     두가지 모집 방법이 있습니다.<br/>
-                    <strong>선착순</strong>으로 모집하는 경우, 모집 인원 이내의 접수는 자동으로 확정되며, 제한 인원을 넘는 신청은 대기 신청이 되며 이후에 확정된 신청 중에 취소가 발생하면 선착순으로 대기 신청자를 확정 신청자도 변경합니다. 단, 등록 마감일 이후에는 취소해도 확정 여부가 바뀌지 않습니다.<br/>
-                    <strong>확인</strong>으로 모집하는 경우, 모임 및 Hobby 관리자가 모임 신청 목록을 조회하고 직접 확정 여부를 정할 수 있습니다. 등록 마감일 이후에는 변경할 수 없습니다.
+                    <strong>선착순</strong>으로 모집하는 경우, 모집 인원 이내의 접수는 자동으로 확정되며, 제한 인원을 넘는 신청은 대기 신청이 되며 이후에 확정된 신청 중에 취소가
+                    발생하면 선착순으로 대기 신청자를 확정 신청자도 변경합니다. 단, 등록 마감일 이후에는 취소해도 확정 여부가 바뀌지 않습니다.<br/>
+                    <strong>확인</strong>으로 모집하는 경우, 모임 및 Hobby 관리자가 모임 신청 목록을 조회하고 직접 확정 여부를 정할 수 있습니다. 등록 마감일 이후에는 변경할 수
+                    없습니다.
                 </small>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-3">
                     <label for="limitOfEnrollments">모집 인원</label>
-                    <input id="limitOfEnrollments" type="number" th:field="*{limitOfEnrollments}" class="form-control" placeholder="0"
+                    <input id="limitOfEnrollments" type="number" th:field="*{limitOfEnrollments}" class="form-control"
+                           placeholder="0"
                            aria-describedby="limitOfEnrollmentsHelp">
                     <small id="limitOfEnrollmentsHelp" class="form-text text-muted">
                         최대 수용 가능한 모임 참석 인원을 설정하세요. 최소 2인 이상 모임이어야 합니다.
                     </small>
                     <small class="invalid-feedback">모임 신청 마감 일시를 입력하세요.</small>
-                    <small class="form-text text-danger" th:if="${#fields.hasErrors('limitOfEnrollments')}" th:errors="*{limitOfEnrollments}">Error</small>
+                    <small class="form-text text-danger" th:if="${#fields.hasErrors('limitOfEnrollments')}"
+                           th:errors="*{limitOfEnrollments}">Error</small>
                 </div>
                 <div class="form-group col-md-3">
                     <label for="endEnrollmentDateTime">등록 마감 일시</label>
-                    <input id="endEnrollmentDateTime" type="datetime-local" th:field="*{endEnrollmentDateTime}" class="form-control"
+                    <input id="endEnrollmentDateTime" type="datetime-local" th:field="*{endEnrollmentDateTime}"
+                           class="form-control"
                            aria-describedby="endEnrollmentDateTimeHelp" required>
                     <small id="endEnrollmentDateTimeHelp" class="form-text text-muted">
                         등록 마감 이전에만 Hobby 모임 참가 신청을 할 수 있습니다.
                     </small>
                     <small class="invalid-feedback">모임 신청 마감 일시를 입력하세요.</small>
-                    <small class="form-text text-danger" th:if="${#fields.hasErrors('endEnrollmentDateTime')}" th:errors="*{endEnrollmentDateTime}">Error</small>
+                    <small class="form-text text-danger" th:if="${#fields.hasErrors('endEnrollmentDateTime')}"
+                           th:errors="*{endEnrollmentDateTime}">Error</small>
                 </div>
                 <div class="form-group col-md-3">
                     <label for="startDateTime">모임 시작 일시</label>
@@ -572,7 +583,8 @@
                         모임 시작 일시를 입력하세요. 상세한 모임 일정은 본문에 적어주세요.
                     </small>
                     <small class="invalid-feedback">모임 시작 일시를 입력하세요.</small>
-                    <small class="form-text text-danger" th:if="${#fields.hasErrors('startDateTime')}" th:errors="*{startDateTime}">Error</small>
+                    <small class="form-text text-danger" th:if="${#fields.hasErrors('startDateTime')}"
+                           th:errors="*{startDateTime}">Error</small>
                 </div>
                 <div class="form-group col-md-3">
                     <label for="startDateTime">모임 종료 일시</label>
@@ -582,7 +594,8 @@
                         모임 종료 일시가 지나면 모임은 자동으로 종료 상태로 바뀝니다.
                     </small>
                     <small class="invalid-feedback">모임 종료 일시를 입력하세요.</small>
-                    <small class="form-text text-danger" th:if="${#fields.hasErrors('endDateTime')}" th:errors="*{endDateTime}">Error</small>
+                    <small class="form-text text-danger" th:if="${#fields.hasErrors('endDateTime')}"
+                           th:errors="*{endDateTime}">Error</small>
                 </div>
             </div>
             <div class="form-group">
@@ -593,13 +606,26 @@
                     모임에서 다루는 주제, 장소, 진행 방식 등을 자세히 적어 주세요.
                 </small>
                 <small class="invalid-feedback">모임 설명을 입력하세요.</small>
-                <small class="form-text text-danger" th:if="${#fields.hasErrors('description')}" th:errors="*{description}">Error</small>
+                <small class="form-text text-danger" th:if="${#fields.hasErrors('description')}"
+                       th:errors="*{description}">Error</small>
             </div>
             <div class="form-group">
                 <button class="btn btn-primary btn-block" type="submit"
-                        aria-describedby="submitHelp" th:text="${mode == 'edit' ? '모임 수정' : '모임 만들기'}">모임 수정</button>
+                        aria-describedby="submitHelp" th:text="${mode == 'edit' ? '모임 수정' : '모임 만들기'}">모임 수정
+                </button>
             </div>
         </form>
     </div>
 </div>
+
+<ul th:fragment="notification-list (notifications)" class="list-group list-group-flush">
+    <a href="#" th:href="@{${noti.link}}" th:each="noti: ${notifications}"
+       class="list-group-item list-group-item-action">
+        <div class="d-flex w-100 justify-content-between">
+            <small class="text-muted" th:text="${noti.title}">Noti title</small>
+            <small class="fromNow text-muted" th:text="${noti.createdDateTime}">3 days ago</small>
+        </div>
+        <p th:text="${noti.message}" class="text-left mb-0 mt-1">message</p>
+    </a>
+</ul>
 </html>

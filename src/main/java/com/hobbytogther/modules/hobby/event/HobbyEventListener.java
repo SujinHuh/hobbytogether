@@ -61,7 +61,7 @@ public class HobbyEventListener {
         notification.setTitle(hobby.getTitle());
         notification.setLink("/hobby/" + hobby.getEncodedPath());
         notification.setChecked(false);
-        notification.setCreatedLocalDateTime(LocalDateTime.now());
+        notification.setCreatedDateTime(LocalDateTime.now());
         notification.setMessage(hobby.getShortDescription());
         notification.setAccount(account);
         notification.setNotificationType(NotificationType.HOBBY_CREATED);
