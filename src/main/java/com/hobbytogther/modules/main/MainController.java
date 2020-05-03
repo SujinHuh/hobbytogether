@@ -2,6 +2,8 @@ package com.hobbytogther.modules.main;
 
 import com.hobbytogther.modules.account.CurrentAccount;
 import com.hobbytogther.modules.account.Account;
+import com.hobbytogther.modules.notification.NotificationRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
