@@ -21,6 +21,8 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Slf4j
 @Async
@@ -46,44 +48,65 @@ public class HobbyEventListener {
         accounts.forEach(account -> {
             if (account.isStudyCreatedByEmail()) {
                 //이메일 전송
-                sendHobbyCreatedEmail(hobby, account);
+                sendHobbyCreatedEmail(hobby, account,"새로운 Hobby가 생겼습니다",
+                        "HOBBYTOGETHER, ' + hobby.getTitle() + ' Hobby 생겼습니다.");
             }
 
             if (account.isStudyCreatedByWeb()) {
                 //notification
-                saveHobbyCreatedNotification(hobby, account);
+                createNotification(hobby, account,hobby.getShortDescription(),NotificationType.HOBBY_CREATED);
             }
         });
     }
 
-    private void saveHobbyCreatedNotification(Hobby hobby, Account account) {
-        Notification notification = new Notification();
-        notification.setTitle(hobby.getTitle());
-        notification.setLink("/hobby/" + hobby.getEncodedPath());
-        notification.setChecked(false);
-        notification.setCreatedDateTime(LocalDateTime.now());
-        notification.setMessage(hobby.getShortDescription());
-        notification.setAccount(account);
-        notification.setNotificationType(NotificationType.HOBBY_CREATED);
-        notificationRepository.save(notification);
-    }
+    @EventListener
+    public void handleHobbyUpdateEvent(HobbyUpdateEvent hobbyUpdateEvent) {
+        //알림을 보낼 대상 Hobby관리자, 맴버
+        Hobby hobby = hobbyRepository.findHobbyWithManagersAndMembersById(hobbyUpdateEvent.getHobby().getId());
+        Set<Account> accounts = new HashSet<>();
+        accounts.addAll(hobby.getManagers());
+        accounts.addAll(hobby.getMembers());
 
-    private void sendHobbyCreatedEmail(Hobby hobby, Account account) {
+        accounts.forEach(account ->{
+            if(account.isStudyUpdatedByEmail()){
+                //이메일
+                sendHobbyCreatedEmail(hobby, account,hobbyUpdateEvent.getMessage(),
+                        "HOBBYTOGETHER, ' + hobby.getTitle() + ' Hobby에 새소식이 있습니다.");
+            }
+            if(account.isStudyUpdatedByWeb()) {
+                //웹으로
+                 createNotification(hobby, account,hobbyUpdateEvent.getMessage(),NotificationType.HOBBY_UPDATED);
+            }
+        });
+    }
+    private void sendHobbyCreatedEmail(Hobby hobby, Account account,String contextMessage,String emailSubject ) {
         Context context = new Context();
         context.setVariable("nickname", account.getNickname());
         context.setVariable("link", "/hobby/" + hobby.getEncodedPath());
         context.setVariable("linkName", hobby.getTitle());
-        context.setVariable("message", "새로운 Hobby가 생겼습니다");
+        context.setVariable("message",contextMessage);
         context.setVariable("host", appProperties.getHost());
         String message = templateEngine.process("mail/simple-link", context);
 
         EmailMessage emailMessage = EmailMessage.builder()
-                .subject("HOBBYTOGETHER, '" + hobby.getTitle() + "' Hobby가 생겼습니다.")
+                .subject(emailSubject)
                 .to(account.getEmail())
                 .message(message)
                 .build();
 
         emailService.sendEmail(emailMessage);
+    }
+
+    private void createNotification(Hobby hobby, Account account, String message, NotificationType notificationType) {
+        Notification notification = new Notification();
+        notification.setTitle(hobby.getTitle());
+        notification.setLink("/hobby/" + hobby.getEncodedPath());
+        notification.setChecked(false);
+        notification.setCreatedDateTime(LocalDateTime.now());
+        notification.setMessage(message);
+        notification.setAccount(account);
+        notification.setNotificationType(notificationType);
+        notificationRepository.save(notification);
     }
 }
 

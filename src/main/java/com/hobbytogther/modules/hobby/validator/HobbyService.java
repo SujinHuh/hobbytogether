@@ -3,6 +3,7 @@ package com.hobbytogther.modules.hobby.validator;
 import com.hobbytogther.modules.account.Account;
 import com.hobbytogther.modules.hobby.Hobby;
 import com.hobbytogther.modules.hobby.event.HobbyCreatedEvent;
+import com.hobbytogther.modules.hobby.event.HobbyUpdateEvent;
 import com.hobbytogther.modules.tag.Tag;
 import com.hobbytogther.modules.zone.Zone;
 import com.hobbytogther.modules.hobby.form.HobbyDescriptionForm;
@@ -47,6 +48,7 @@ public class HobbyService {
 
     public void updateHobbyDescription(Hobby hobby, HobbyDescriptionForm hobbyDescriptionForm) {
         modelMapper.map(hobbyDescriptionForm, hobby);
+        applicationEventPublisher.publishEvent(new HobbyUpdateEvent(hobby,"Hobby를 수정했습니다."));
     }
 
     public void updateHobbyImage(Hobby hobby, String image) {
@@ -113,14 +115,17 @@ public class HobbyService {
 
     public void close(Hobby hobby) {
         hobby.close();
+        applicationEventPublisher.publishEvent(new HobbyUpdateEvent(hobby,"Hobby를 종료했습니다."));
     }
 
     public void startRecruit(Hobby hobby) {
         hobby.startRecruit();
+        applicationEventPublisher.publishEvent(new HobbyUpdateEvent(hobby,"팀원 모집을 시작했습니다."));
     }
 
     public void stopRecruit(Hobby hobby) {
         hobby.stopRecruit();
+        applicationEventPublisher.publishEvent(new HobbyUpdateEvent(hobby,"팀원 모집을 중단했습니다."));
     }
 
     public void updateHobbyPath(Hobby hobby, String newPath) {
