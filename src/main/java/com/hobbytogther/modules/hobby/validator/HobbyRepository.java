@@ -5,10 +5,8 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.Entity;
-
 @Transactional(readOnly = true)
-public interface HobbyRepository extends JpaRepository<Hobby ,Long> {
+public interface HobbyRepository extends JpaRepository<Hobby ,Long> , HobbyRepositoryExtension {
     boolean existsByPath(String path);
 
     @EntityGraph(value = "Hobby.withAllRelations", type = EntityGraph.EntityGraphType.LOAD)
