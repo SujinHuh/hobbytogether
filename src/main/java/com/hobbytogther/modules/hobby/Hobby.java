@@ -79,6 +79,8 @@ public class Hobby {
 
     private boolean useBanner;
 
+    private int memberCount;
+
     public void addManager(Account account) {
         this.managers.add(account);
     }
@@ -151,10 +153,12 @@ public class Hobby {
 
     public void addMember(Account account) {
         this.getMembers().add(account);
+        this.memberCount++;
     }
 
     public void removeMember(Account account) {
         this.getMembers().remove(account);
+        this.memberCount--;
     }
     public String getEncodedPath() {
         return URLEncoder.encode(this.path, StandardCharsets.UTF_8);

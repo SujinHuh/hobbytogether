@@ -46,6 +46,9 @@ public class MainController {
         Page<Hobby> hobbyPage = hobbyRepository.findByKeyword(keyword, pageable);
         model.addAttribute("hobbyPage",hobbyPage);
         model.addAttribute("keyword", keyword);
+        model.addAttribute("sortProperty",
+                pageable.getSort().toString().contains("publishedDateTime") ? "publishedDateTime" : "memberCount");
+
         return "search";
     }
 }
