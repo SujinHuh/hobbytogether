@@ -5,15 +5,19 @@ import com.hobbytogther.modules.hobby.Hobby;
 import com.hobbytogther.modules.hobby.event.HobbyCreatedEvent;
 import com.hobbytogther.modules.hobby.event.HobbyUpdateEvent;
 import com.hobbytogther.modules.tag.Tag;
+import com.hobbytogther.modules.tag.TagRepository;
 import com.hobbytogther.modules.zone.Zone;
 import com.hobbytogther.modules.hobby.form.HobbyDescriptionForm;
 import lombok.RequiredArgsConstructor;
+import net.bytebuddy.utility.RandomString;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+
+import java.util.HashSet;
 
 import static com.hobbytogther.modules.hobby.form.HobbyForm.VALID_PATH;
 
@@ -25,6 +29,7 @@ public class HobbyService {
     private final HobbyRepository hobbyRepository;
     private final ModelMapper modelMapper;
     private final ApplicationEventPublisher applicationEventPublisher;
+    private final TagRepository tagRepository;
 
     public Hobby createNewHobby(Hobby hobby, Account account) {
         Hobby newHobby = hobbyRepository.save(hobby);
@@ -169,5 +174,25 @@ public class HobbyService {
          checkIfExistingHobby(path,hobby);
 
          return hobby;
+    }
+
+    public void generateTestHobbies(Account account) {
+        for(int i = 0; i <30 ; i++) {
+            String randomvalue = RandomString.make(5);
+            Hobby hobby = Hobby.builder()
+                    .title("'테스트' 취미" + randomvalue)
+                    .path("test-" + randomvalue)
+                    .shortDescription("테스트용 Hobby 입니다.")
+                    .fullDescription("test")
+                    .tags(new HashSet<>())
+                    .managers(new HashSet<>())
+                    .build();
+
+            hobby.publish();
+            Hobby newHobby = this.createNewHobby(hobby, account);
+            Tag jpa = tagRepository.findByTitle("JPA");
+            newHobby.getTags().add(jpa);
+        }
+
     }
 }

@@ -91,4 +91,12 @@ public class HobbyController {
     private String getPath(String path) {
         return URLEncoder.encode(path, StandardCharsets.UTF_8);
     }
+
+    /** 테스트 코드*/
+    @GetMapping("/hobby/data")
+    public String generateTestData(@CurrentAccount Account account) {
+        hobbyService.generateTestHobbies(account);
+        return "redirect:/";
+    }
+
 }

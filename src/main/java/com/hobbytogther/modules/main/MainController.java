@@ -6,6 +6,10 @@ import com.hobbytogther.modules.hobby.Hobby;
 import com.hobbytogther.modules.hobby.validator.HobbyRepository;
 import com.hobbytogther.modules.notification.NotificationRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,10 +40,11 @@ public class MainController {
 
     /** Search Hobby */
     @GetMapping("/search/hobby")
-    public String searchHobby(String keyword, Model model) {
+    public String searchHobby(@PageableDefault(size = 9,sort = "publishedDateTime", direction = Sort.Direction.ASC)
+                                          Pageable pageable, String keyword, Model model) {
         //querydsl 사용 - 확장 구현체
-        List<Hobby> hobbyList = hobbyRepository.findByKeyword(keyword);
-        model.addAttribute(hobbyList);
+        Page<Hobby> hobbyPage = hobbyRepository.findByKeyword(keyword, pageable);
+        model.addAttribute("hobbyPage",hobbyPage);
         model.addAttribute("keyword", keyword);
         return "search";
     }
