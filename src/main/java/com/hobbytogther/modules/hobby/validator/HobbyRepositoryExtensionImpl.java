@@ -31,7 +31,6 @@ public class HobbyRepositoryExtensionImpl extends QuerydslRepositorySupport impl
                 /** N+1 문제 해결 */
                 .leftJoin(hobby.tags, QTag.tag).fetchJoin()//fetchJoin을하기 위해서는 leftJoin이 있어야 한다. .fetchJoin()은 Join한 Data를 가져오는 것
                 .leftJoin(hobby.zones, QZone.zone).fetchJoin()
-                .leftJoin(hobby.members, QAccount.account).fetchJoin()
                 .distinct()//중복 데이터 해결
                 //결과중에서 유일한 값만 결과 값이 나옴
                 //쿼리 결과 최적화 : 1. distinct를 빼는 것(의미 없기때문에) resultTransformer를 제공

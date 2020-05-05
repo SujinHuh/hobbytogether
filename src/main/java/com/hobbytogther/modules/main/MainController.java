@@ -28,6 +28,9 @@ public class MainController {
             model.addAttribute(account);
         }
         //view 에서는 null인지 아닌지 확인
+
+        model.addAttribute("hobbyList", hobbyRepository.findFirst9ByPublishedAndClosedOrderByPublishedDateTimeDesc(true, false));
+
         return "index";
     }
     /**
