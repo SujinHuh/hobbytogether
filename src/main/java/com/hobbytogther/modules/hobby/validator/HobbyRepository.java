@@ -1,5 +1,6 @@
 package com.hobbytogther.modules.hobby.validator;
 
+import com.hobbytogther.modules.account.Account;
 import com.hobbytogther.modules.hobby.Hobby;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -34,6 +35,11 @@ public interface HobbyRepository extends JpaRepository<Hobby ,Long> , HobbyRepos
     @EntityGraph(attributePaths = {"members", "managers"})
     Hobby findHobbyWithManagersAndMembersById(Long id);
 
+    @EntityGraph(attributePaths = {"zones", "tags"})
     List<Hobby> findFirst9ByPublishedAndClosedOrderByPublishedDateTimeDesc(boolean published, boolean closed);
+
+    List<Hobby> findFirst5ByManagersContainingAndClosedOrderByPublishedDateTimeDesc(Account account, boolean closed);
+
+    List<Hobby> findFirst5ByMembersContainingAndClosedOrderByPublishedDateTimeDesc(Account account, boolean closed);
 }
 

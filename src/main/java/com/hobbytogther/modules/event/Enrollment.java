@@ -5,11 +5,17 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.time.LocalDateTime;
+
+@NamedEntityGraph(
+        name = "Enrollment.withEventAndHobby",
+        attributeNodes = {
+                @NamedAttributeNode(value = "event", subgraph = "hobby")
+        },
+        /** 직접적으로 연관관계에 있는 Enrollment 가지고 있는 Hobby 까지 같이가져오는 것 * 서브쿼리 등록 >*/
+        subgraphs = @NamedSubgraph(name = "hobby", attributeNodes = @NamedAttributeNode("hobby"))
+)
 
 @Entity
 @Getter @Setter @EqualsAndHashCode(of = "id")

@@ -4,7 +4,9 @@ import com.hobbytogther.modules.account.QAccount;
 import com.hobbytogther.modules.hobby.Hobby;
 import com.hobbytogther.modules.hobby.QHobby;
 import com.hobbytogther.modules.tag.QTag;
+import com.hobbytogther.modules.tag.Tag;
 import com.hobbytogther.modules.zone.QZone;
+import com.hobbytogther.modules.zone.Zone;
 import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.JPQLQuery;
 import org.springframework.data.domain.Page;
@@ -13,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
 import java.util.List;
+import java.util.Set;
 
 public class HobbyRepositoryExtensionImpl extends QuerydslRepositorySupport implements HobbyRepositoryExtension {
 
@@ -44,5 +47,20 @@ public class HobbyRepositoryExtensionImpl extends QuerydslRepositorySupport impl
 
 
         return new PageImpl<>(hobbyFetchResults.getResults(), pageable,hobbyFetchResults.getTotal());
+    }
+
+    @Override
+    public List<Hobby> findByAccount(Set<Tag> tags, Set<Zone> zones) {
+        QHobby hobby = QHobby.hobby;
+        JPQLQuery<Hobby> query = from(hobby).where(hobby.published.isTrue()
+                .and(hobby.closed.isFalse())
+                .and(hobby.tags.any().in(tags))
+                .and(hobby.zones.any().in(zones)))
+                .leftJoin(hobby.tags, QTag.tag).fetchJoin()
+                .leftJoin(hobby.zones, QZone.zone).fetchJoin()
+                .orderBy(hobby.publishedDateTime.desc())
+                .distinct() // 중복 데이터가 생길 수 있어서 distinct 추가
+                .limit(9);
+        return query.fetch();
     }
 }

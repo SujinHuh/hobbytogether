@@ -1,7 +1,9 @@
 package com.hobbytogther.modules.main;
 
+import com.hobbytogther.modules.account.AccountRepository;
 import com.hobbytogther.modules.account.CurrentAccount;
 import com.hobbytogther.modules.account.Account;
+import com.hobbytogther.modules.event.EnrollmentRepository;
 import com.hobbytogther.modules.hobby.Hobby;
 import com.hobbytogther.modules.hobby.validator.HobbyRepository;
 import com.hobbytogther.modules.notification.NotificationRepository;
@@ -21,11 +23,23 @@ import java.util.List;
 public class MainController {
 
     private final HobbyRepository hobbyRepository;
+    private final EnrollmentRepository enrollmentRepository;
+    private final AccountRepository accountRepository;
 
     @GetMapping("/")
     public String home(@CurrentAccount Account account, Model model){
         if(account != null) { //인증을 한 사용자
-            model.addAttribute(account);
+            Account accountLoaded = accountRepository.findAccountWithTagsAndZonesById(account.getId());
+            model.addAttribute(accountLoaded);
+            model.addAttribute("enrollmentList", enrollmentRepository.findByAccountAndAcceptedOrderByEnrolledAtDesc(account, true));
+            model.addAttribute("hobbyList", hobbyRepository.findByAccount(
+                    accountLoaded.getTags(),
+                    accountLoaded.getZones()));
+            model.addAttribute("hobbyManagerOf",
+                    hobbyRepository.findFirst5ByManagersContainingAndClosedOrderByPublishedDateTimeDesc(account, false));
+            model.addAttribute("hobbyMemberOf",
+                    hobbyRepository.findFirst5ByMembersContainingAndClosedOrderByPublishedDateTimeDesc(account, false));
+            return "index-after-login";
         }
         //view 에서는 null인지 아닌지 확인
 
