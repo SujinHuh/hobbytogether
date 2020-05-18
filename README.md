@@ -19,3 +19,7 @@
  - PostgreSQL
  - JUnit5
  - bootstrap
+
+### 수정사항
+
+ - local환경에서는 __모임 만들기__ 문제없었지만, 서버에 올린후 error 수정
