@@ -6,22 +6,21 @@
 <div class="container">
     <div class="py-5 text-center">
         <p class="lead" th:if="${hobbyPage.getTotalElements() == 0}">
-            <strong th:text="${keyword}" id="keyword" class="context"></strong>에 해당하는 Hobby가 없습니다.
+            <strong th:text="${keyword}" id="keyword" class="context"></strong>에 해당하는 취미가 없습니다.
         </p>
         <p class="lead" th:if="${hobbyPage.getTotalElements() > 0}">
-            <strong th:text="${keyword}" id="keyword" class="context"></strong>에 해당하는 Hobby를
+            <strong th:text="${keyword}" id="keyword" class="context"></strong>에 해당하는 취미를
             <span th:text="${hobbyPage.getTotalElements()}"></span>개
             찾았습니다.
         </p>
         <div class="dropdown">
-            <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
-                    aria-haspopup="true" aria-expanded="false">
+            <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 검색 결과 정렬 방식
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                 <a class="dropdown-item" th:classappend="${#strings.equals(sortProperty, 'publishedDateTime')}? active"
                    th:href="@{'/search/hobby?sort=publishedDateTime,desc&keyword=' + ${keyword}}">
-                    Hobby 공개일
+                    취미 공개일
                 </a>
                 <a class="dropdown-item" th:classappend="${#strings.equals(sortProperty, 'memberCount')}? active"
                    th:href="@{'/search/hobby?sort=memberCount,desc&keyword=' + ${keyword}}">
@@ -31,63 +30,47 @@
         </div>
     </div>
     <div class="row justify-content-center">
-        <div class="col-sm-10">
-            <div class="row">
-                <div class="col-md-4" th:each="hobby: ${hobbyPage.getContent()}">
-                    <div class="card mb-4 shadow-sm">
-                        <img th:src="${hobby.image}" class="context card-img-top" th:alt="${hobby.title}">
-                        <div class="card-body">
-                            <a th:href="@{'/hobby/' + ${hobby.path}}" class="text-decoration-none">
-                                <h5 class="card-title context" th:text="${hobby.title}"></h5>
-                            </a>
-                            <p class="card-text" th:text="${hobby.shortDescription}">Short description</p>
-                            <p class="card-text context">
-                                    <span th:each="tag: ${hobby.tags}"
-                                          class="font-weight-light text-monospace badge badge-pill badge-info mr-3">
-                                        <a th:href="@{'/search/tag/' + ${tag.title}}"
-                                           class="text-decoration-none text-white">
-                                            <i class="fa fa-tag"></i> <span th:text="${tag.title}">Tag</span>
-                                        </a>
-                                    </span>
-                                <span th:each="zone: ${hobby.zones}"
-                                      class="font-weight-light text-monospace badge badge-primary mr-3">
-                                        <a th:href="@{'/search/zone/' + ${zone.id}}"
-                                           class="text-decoration-none text-white">
-                                            <i class="fa fa-globe"></i> <span th:text="${zone.localNameOfCity}"
-                                                                              class="text-white">City</span>
-                                        </a>
-                                    </span>
-                            </p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <small class="text-muted">
-                                    <i class="fa fa-user-circle"></i>
-                                    <span th:text="${hobby.memberCount}"></span>명
-                                </small>
-                                <small class="text-muted date" th:text="${hobby.publishedDateTime}">9 mins</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row justify-content-center">
         <div th:replace="fragements.html :: hobby-list (hobbyList=${hobbyPage.getContent()})"></div>
     </div>
-</div>d
+    <div class="row justify-content-center">
+        <div class="col-sm-10">
+            <nav>
+                <ul class="pagination justify-content-center">
+                    <li class="page-item" th:classappend="${!hobbyPage.hasPrevious()}? disabled">
+                        <a th:href="@{'/search/hobby?keyword=' + ${keyword} + '&sort=' + ${sortProperty} + ',desc&page=' + ${hobbyPage.getNumber() - 1}}"
+                           class="page-link" tabindex="-1" aria-disabled="true">
+                            Previous
+                        </a>
+                    </li>
+                    <li class="page-item" th:classappend="${i == hobbyPage.getNumber()}? active"
+                        th:each="i: ${#numbers.sequence(0, hobbyPage.getTotalPages() - 1)}">
+                        <a th:href="@{'/search/hobby?keyword=' + ${keyword} + '&sort=' + ${sortProperty} + ',desc&page=' + ${i}}"
+                           class="page-link" href="#" th:text="${i + 1}">1</a>
+                    </li>
+                    <li class="page-item" th:classappend="${!hobbyPage.hasNext()}? disabled">
+                        <a th:href="@{'/search/hobby?keyword=' + ${keyword} + '&sort=' + ${sortProperty} + ',desc&page=' + ${hobbyPage.getNumber() + 1}}"
+                           class="page-link">
+                            Next
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
 <div th:replace="fragements.html :: footer"></div>
 <script th:replace="fragements.html :: date-time"></script>
 <script src="/node_modules/mark.js/dist/jquery.mark.min.js"></script>
 <script type="application/javascript">
-    $(function () {
-        var mark = function () {
+    $(function(){
+        var mark = function() {
             // Read the keyword
             var keyword = $("#keyword").text();
 
             // Determine selected options
             var options = {
-                "each": function (element) {
-                    setTimeout(function () {
+                "each": function(element) {
+                    setTimeout(function() {
                         $(element).addClass("animate");
                     }, 150);
                 }
@@ -95,7 +78,7 @@
 
             // Mark the keyword inside the context
             $(".context").unmark({
-                done: function () {
+                done: function() {
                     $(".context").mark(keyword, options);
                 }
             });
@@ -105,4 +88,4 @@
     });
 </script>
 </body>
-</html> 
+</html>
