@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -26,10 +27,10 @@ public class ZoneService {
     @PostConstruct /** Bean이 만들어진 이후에 실행이되는 지점 */
     public void initZoneData() throws IOException {
         if(zoneRepository.count() == 0) {
-            Resource resource = new ClassPathResource("zones_kr.csv");
+            File f = new File("/Users/huhsujin/IdeaProjects/zones_kr.csv");
             /**zones_kr.csv있는 데이터를 객체로 읽어옴 */
             /** 파일에 리드 올라인 첫번째인자 (spring이 지원해주는 resorce추상화에서 경로를 가져올 수 있음) */
-            List<Zone> zoneList = Files.readAllLines(resource.getFile().toPath(), StandardCharsets.UTF_8).stream()
+            List<Zone> zoneList = Files.readAllLines(f.toPath(), StandardCharsets.UTF_8).stream()
                     /** 각각 라인을 한 줄씩 읽어온다. / 한 줄을 Jon이라는 Entity객체로 변화 */
                     .map(line -> {
                         /**라인을 쪼갠다. 배열이 나온다. */
