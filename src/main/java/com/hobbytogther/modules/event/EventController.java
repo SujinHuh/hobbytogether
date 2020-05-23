@@ -47,7 +47,7 @@ public class EventController {
         model.addAttribute(account);
         model.addAttribute(new EventForm());
 
-        return "/event/form";
+        return "event/form";
     }
 
     @PostMapping("/new-event")
