@@ -1,7 +1,7 @@
 # HobbyThogether
 취미 관련 모임 서비스
 
-##참고 백기선님 JPA강좌
+## 참고 백기선님 JPA강좌
 
 [HOBBY TOGETHER 바로가기](http://211.110.229.7:8181/).
 # 개발 환경
